@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import type { ContainerInfo } from "./types";
-import type { Auth } from "./Admin";
+import type { ContainerInfo } from "../types";
+import type { Auth } from "./Admin.tsx";
 import {
     getPublicContainers,
     getDashboardContainers,
     getAllContainers,
     startContainer,
     stopContainer,
-} from "./api/docker";
-import { buttonStyles, textStyles, navbarStyles } from "./styles";
-import ContainerTable from "./components/docker/ContainerTable";
+} from "../api/docker.ts";
+import { buttonStyles, textStyles, navbarStyles } from "../styles";
+import ContainerTable from "../components/docker/ContainerTable.tsx";
 import { Link } from 'react-router-dom';
 
 type View = "public" | "dashboard" | "all";

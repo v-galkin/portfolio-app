@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Project } from "../types";
-import { layoutStyles, cardStyles, buttonStyles, badgeStyles, textStyles } from "../styles";
+import type { Project } from "../../types";
+import { layoutStyles, cardStyles, buttonStyles, badgeStyles, textStyles } from "../../styles";
 
 interface Props {
     projects: Project[];

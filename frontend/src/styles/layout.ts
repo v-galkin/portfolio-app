@@ -19,7 +19,7 @@ export const layoutStyles = {
         colorTokens.slate.bg,
     ].join(" "),
 
-    container: "max-w-4xl mx-auto",
+    container: "max-w-6xl mx-auto px-6",
 
     sectionTitle: [
         typographyTokens.h2,

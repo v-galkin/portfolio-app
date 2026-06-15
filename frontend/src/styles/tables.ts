@@ -26,7 +26,7 @@ export const tableStyles = {
     th: [
         typographyTokens.h4,
         colorTokens.slate.muted,
-        "pb-3 pr-6",
+        "px-4 py-4",
     ].join(" "),
 
     tr: [
@@ -39,7 +39,7 @@ export const tableStyles = {
     td: [
         typographyTokens.body,
         colorTokens.slate.muted,
-        "py-3 pr-6",
+        "px-4 py-4",
     ].join(" "),
 
     rowDivider: [

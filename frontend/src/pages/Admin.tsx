@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import ProjectsTab from "./components/admin/ProjectsTab";
-import ExperiencesTab from "./components/admin/ExperiencesTab";
-import EducationTab from "./components/admin/EducationTab";
-import SkillsTab from "./components/admin/SkillsTab";
-import CertificationsTab from "./components/admin/CertificationsTab";
+
+import Navbar from "../components/portfolio/Navbar.tsx";
+import ProjectsTab from "../components/admin/ProjectsTab.tsx";
+import ExperiencesTab from "../components/admin/ExperiencesTab.tsx";
+import EducationTab from "../components/admin/EducationTab.tsx";
+import SkillsTab from "../components/admin/SkillsTab.tsx";
+import CertificationsTab from "../components/admin/CertificationsTab.tsx";
+import HistoryTab from "../components/admin/HistoryTab.tsx";
 
 export interface Auth {
     username: string;
@@ -22,10 +24,10 @@ const tabs = [
     "Education",
     "Skills",
     "Certifications",
+    "History"
 ];
 
 export default function Admin({ auth, setAuth }: Props) {
-    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -117,51 +119,12 @@ export default function Admin({ auth, setAuth }: Props) {
         <div className="min-h-screen bg-slate-900 text-slate-100">
 
             {/* NAVBAR START */}
-            <header className="bg-slate-800 border-b border-slate-700 px-6 py-3 flex items-center justify-between">
-
-                {/* NAVBAR TITLE START */}
-                <h1 className="text-white font-bold text-lg">Admin Panel</h1>
-                {/* NAVBAR TITLE END */}
-
-                {/* NAVBAR ACTIONS START */}
-                <div className="flex items-center gap-4">
-
-                    {/* LOGGED IN USER START */}
-                    <span className="text-slate-400 text-sm">
-                        Logged in as <span className="text-white">{auth.username}</span>
-                    </span>
-                    {/* LOGGED IN USER END */}
-
-                    {/* LOGOUT BUTTON START */}
-                    <button
-                        onClick={() => {
-                            setAuth(null);
-                            navigate("/");
-                        }}
-                        className="px-3 py-1.5 bg-red-900/30 hover:bg-red-900/50 text-red-400 border border-red-800/50 rounded-lg text-sm font-medium transition-colors duration-200"
-                    >
-                        Logout
-                    </button>
-                    {/* LOGOUT BUTTON END */}
-
-                    {/* VIEW SITE LINK START */}
-                    <Link
-                        to="/"
-                        className="px-3 py-1.5 border border-slate-600 hover:border-slate-500 text-slate-300 hover:text-white rounded-lg text-sm font-medium transition-colors duration-200"
-                    >
-                        View Site
-                    </Link>
-                    {/* VIEW SITE LINK END */}
-
-                </div>
-                {/* NAVBAR ACTIONS END */}
-
-            </header>
+            <Navbar auth={auth} setAuth={setAuth} />
             {/* NAVBAR END */}
 
             {/* TAB NAVIGATION START */}
-            <div className="bg-slate-800 border-b border-slate-700 px-6">
-                <nav className="flex gap-1 overflow-x-auto">
+            <div className="bg-slate-800 border-b border-slate-700">
+                <nav className="flex gap-1 overflow-x-auto max-w-6xl mx-auto px-6">
                     {tabs.map((tab) => (
                         <button
                             key={tab}
@@ -180,12 +143,13 @@ export default function Admin({ auth, setAuth }: Props) {
             {/* TAB NAVIGATION END */}
 
             {/* TAB CONTENT START */}
-            <main className="p-6 max-w-6xl mx-auto">
+            <main className="py-6 max-w-6xl mx-auto">
                 {activeTab === "Projects" && <ProjectsTab auth={auth} />}
                 {activeTab === "Experiences" && <ExperiencesTab auth={auth} />}
                 {activeTab === "Education" && <EducationTab auth={auth} />}
                 {activeTab === "Skills" && <SkillsTab auth={auth} />}
                 {activeTab === "Certifications" && <CertificationsTab auth={auth} />}
+                {activeTab === "History" && <HistoryTab auth={auth} />}
             </main>
             {/* TAB CONTENT END */}
 

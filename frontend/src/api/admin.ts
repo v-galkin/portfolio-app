@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Project, Experience, Education, Skill, Certification } from "../types";
+import type { Project, Experience, Education, Skill, Certification, HistoryEntry } from "../types";
 
 const adminClient = (username: string, password: string) =>
     axios.create({
@@ -59,3 +59,13 @@ export const updateCertification = (auth: { username: string; password: string }
 
 export const deleteCertification = (auth: { username: string; password: string }, id: number) =>
     adminClient(auth.username, auth.password).delete(`/certifications/${id}`);
+
+// HISTORY
+export const createHistoryEntry = (auth: { username: string; password: string }, data: Omit<HistoryEntry, "id">) =>
+    adminClient(auth.username, auth.password).post("/history", data);
+
+export const updateHistoryEntry = (auth: { username: string; password: string }, id: number, data: Omit<HistoryEntry, "id">) =>
+    adminClient(auth.username, auth.password).put(`/history/${id}`, data);
+
+export const deleteHistoryEntry = (auth: { username: string; password: string }, id: number) =>
+    adminClient(auth.username, auth.password).delete(`/history/${id}`);

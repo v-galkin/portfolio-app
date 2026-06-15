@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
-import Navbar from "./components/Navbar";
-import About from "./components/About";
-import Experience from "./components/Experience";
-import Education from "./components/Education";
-import Projects from "./components/Projects";
-import Skills from "./components/Skills";
-import Certifications from "./components/Certifications";
-import Contact from "./components/Contact";
+import Navbar from "../components/portfolio/Navbar.tsx";
+import About from "../components/portfolio/About.tsx";
+import Experience from "../components/portfolio/Experience.tsx";
+import Education from "../components/portfolio/Education.tsx";
+import Projects from "../components/portfolio/Projects.tsx";
+import Skills from "../components/portfolio/Skills.tsx";
+import Certifications from "../components/portfolio/Certifications.tsx";
+import Contact from "../components/portfolio/Contact.tsx";
 import {
     getProjects,
     getExperiences,
     getEducations,
     getCertifications,
     getSkills,
-} from "./api/client";
+} from "../api/client.ts";
 import type {
     Project,
     Experience as ExperienceType,
     Education as EducationType,
     Certification,
     Skill,
-} from "./types";
-import type { Auth } from "./Admin";
+} from "../types";
+import type { Auth } from "./Admin.tsx";
 
 interface Props {
     auth: Auth | null;
@@ -90,7 +90,7 @@ function App({ auth, setAuth }: Props) {
 
             {/* FOOTER START */}
             <footer className="text-center py-4 text-slate-500 text-sm border-t border-slate-800">
-                John Doe © 2026
+                Vitalii Galkin © 2026
             </footer>
             {/* FOOTER END */}
 

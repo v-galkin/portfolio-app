@@ -1,5 +1,5 @@
-import type { Certification } from "../types";
-import { layoutStyles, cardStyles, buttonStyles, textStyles } from "../styles";
+import type { Certification } from "../../types";
+import { layoutStyles, cardStyles, buttonStyles, textStyles } from "../../styles";
 
 interface Props {
     certifications: Certification[];

@@ -1,5 +1,5 @@
-import type { Education } from "../types";
-import { layoutStyles, cardStyles, textStyles } from "../styles";
+import type { Education } from "../../types";
+import { layoutStyles, cardStyles, textStyles } from "../../styles";
 
 interface Props {
     educations: Education[];

@@ -1,4 +1,4 @@
-import { layoutStyles, buttonStyles, textStyles } from "../styles";
+import { layoutStyles, buttonStyles, textStyles } from "../../styles";
 
 export default function About() {
     return (
@@ -27,14 +27,6 @@ export default function About() {
                         {/* BIO END */}
                         {/* ACTION BUTTONS START */}
                         <div className="flex gap-3 flex-wrap">
-                            {/* EMAIL BUTTON START */}
-                            <a
-                                href="mailto:galkinvl111@gmail.com"
-                                className={buttonStyles.primary}
-                            >
-                                Email Me
-                            </a>
-                            {/* EMAIL BUTTON END */}
                             {/* GITHUB BUTTON START */}
                             <a
                                 href="https://github.com"

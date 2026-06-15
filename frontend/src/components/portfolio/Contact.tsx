@@ -1,4 +1,4 @@
-import { layoutStyles, cardStyles, buttonStyles } from "../styles";
+import { layoutStyles, cardStyles, buttonStyles } from "../../styles";
 
 export default function Contact() {
     return (
@@ -14,24 +14,8 @@ export default function Contact() {
 
                 {/* CONTACT CARD START */}
                 <div className={`${cardStyles.card} p-10 text-center`}>
-
-                    {/* DESCRIPTION START */}
-                    <p className="text-slate-400 text-lg mb-6">
-                        Interested in working together? Feel free to reach out!
-                    </p>
-                    {/* DESCRIPTION END */}
-
                     {/* CONTACT BUTTONS START */}
                     <div className="flex gap-3 justify-center flex-wrap">
-
-                        {/* EMAIL BUTTON START */}
-                        <a
-                            href="mailto:john@example.com"
-                            className={buttonStyles.primary}
-                        >
-                            Email
-                        </a>
-                        {/* EMAIL BUTTON END */}
 
                         {/* LINKEDIN BUTTON START */}
                         <a

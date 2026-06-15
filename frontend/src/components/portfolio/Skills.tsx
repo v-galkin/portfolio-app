@@ -1,5 +1,5 @@
-import type { Skill } from "../types";
-import { layoutStyles, cardStyles, textStyles } from "../styles";
+import type { Skill } from "../../types";
+import { layoutStyles, cardStyles, textStyles } from "../../styles";
 
 interface Props {
     skills: Skill[];

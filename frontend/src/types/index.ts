@@ -43,6 +43,14 @@ export interface Skill {
     items: string[];
 }
 
+export interface HistoryEntry {
+    id: number;
+    date: string;
+    title: string;
+    description: string;
+    category: string;
+}
+
 export interface ContainerInfo {
     id: string;
     shortId: string;

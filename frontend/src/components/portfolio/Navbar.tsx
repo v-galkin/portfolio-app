@@ -1,26 +1,21 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { navbarStyles, buttonStyles, textStyles } from "../styles";
-import type { Auth } from "../Admin";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { navbarStyles } from "../../styles";
+import type { Auth } from "../../pages/Admin.tsx";
 
 interface Props {
     auth: Auth | null;
     setAuth: (auth: Auth | null) => void;
 }
 
-const navLinks = [
-    { label: "About", href: "#about" },
-    { label: "Experience", href: "#experience" },
-    { label: "Education", href: "#education" },
-    { label: "Projects", href: "#projects" },
-    { label: "Skills", href: "#skills" },
-    { label: "Certifications", href: "#certifications" },
-    { label: "Contact", href: "#contact" },
-];
+const navLinks: { label: string; href: string }[] = [];
 
 export default function Navbar({ auth, setAuth }: Props) {
+    const navigate = useNavigate();
     const [activeSection, setActiveSection] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const sections = document.querySelectorAll("section[id]");
@@ -38,6 +33,17 @@ export default function Navbar({ auth, setAuth }: Props) {
         return () => observer.disconnect();
     }, []);
 
+    // CLOSE DROPDOWN ON OUTSIDE CLICK
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
     return (
         /* NAVBAR START */
         <header className={navbarStyles.navbar}>
@@ -46,11 +52,17 @@ export default function Navbar({ auth, setAuth }: Props) {
                 {/* LEFT SIDE START */}
                 <div className="flex items-center gap-6">
 
-                    {/* BRAND START */}
-                    <h2 className={navbarStyles.brand}>
-                        John Doe
-                    </h2>
-                    {/* BRAND END */}
+                    {/* MAIN PAGE LINK START */}
+                    <Link to="/" className={navbarStyles.brand}>
+                        Main Page
+                    </Link>
+                    {/* MAIN PAGE LINK END */}
+
+                    {/* HISTORY PAGE LINK START */}
+                    <Link to="/history" className={navbarStyles.brand}>
+                        History
+                    </Link>
+                    {/* MAIN PAGE LINK END */}
 
                     {/* DESKTOP NAV START */}
                     <nav className={navbarStyles.nav}>
@@ -76,45 +88,41 @@ export default function Navbar({ auth, setAuth }: Props) {
                 {/* RIGHT SIDE START */}
                 <div className="flex items-center gap-3">
 
-                    {/* LIVE PROJECTS LINK START */}
-                    <Link
-                        to="/docker"
-                        className={navbarStyles.linkAccent}
-                    >
-                        Live Projects
-                    </Link>
-                    {/* LIVE PROJECTS LINK END */}
-
                     {/* AUTH SECTION START */}
                     {auth ? (
-                        <>
-                            {/* LOGGED IN USER START */}
-                            <span className={`${textStyles.muted} text-sm hidden lg:block`}>
-                                {auth.username}
-                            </span>
-                            {/* LOGGED IN USER END */}
-
-                            {/* ADMIN LINK START */}
-                            <Link to="/admin" className={navbarStyles.link}>
-                                Admin
-                            </Link>
-                            {/* ADMIN LINK END */}
-
-                            {/* LOGOUT BUTTON START */}
+                        /* ADMIN DROPDOWN START */
+                        <div className="relative" ref={dropdownRef}>
                             <button
-                                onClick={() => setAuth(null)}
-                                className={buttonStyles.danger}
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                className={navbarStyles.link}
                             >
-                                Logout
+                                {auth.username} ▾
                             </button>
-                            {/* LOGOUT BUTTON END */}
-                        </>
+                            {dropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-40 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50">
+                                    <Link
+                                        to="/admin"
+                                        className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 rounded-t-lg"
+                                        onClick={() => setDropdownOpen(false)}
+                                    >
+                                        Admin Panel
+                                    </Link>
+                                    <button
+                                        onClick={() => { setAuth(null); setDropdownOpen(false); navigate("/"); }}
+                                        className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-slate-700 rounded-b-lg"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        /* ADMIN DROPDOWN END */
                     ) : (
-                        /* ADMIN LOGIN LINK START */
+                        /* LOGIN LINK START */
                         <Link to="/admin" className={navbarStyles.link}>
-                            Admin
+                            Login
                         </Link>
-                        /* ADMIN LOGIN LINK END */
+                        /* LOGIN LINK END */
                     )}
                     {/* AUTH SECTION END */}
 

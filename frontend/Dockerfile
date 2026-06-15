@@ -6,6 +6,5 @@ COPY . .
 RUN npm run build
 
 FROM alpine:latest
-WORKDIR /dist
-COPY --from=build /app/dist .
-CMD ["sh", "-c", "cp -r /dist/. /output/"]
+COPY --from=build /app/dist /app/dist
+CMD ["sh", "-c", "cp -r /app/dist/. /dist/"]

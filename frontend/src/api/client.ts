@@ -12,5 +12,6 @@ export const getExperiences = () => client.get("/experiences");
 export const getEducations = () => client.get("/educations");
 export const getCertifications = () => client.get("/certifications");
 export const getSkills = () => client.get("/skills");
+export const getHistory = () => client.get("/history");
 
 export default client;

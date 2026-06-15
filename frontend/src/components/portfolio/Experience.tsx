@@ -1,5 +1,5 @@
-import type { Experience } from "../types";
-import { layoutStyles, cardStyles, textStyles } from "../styles";
+import type { Experience } from "../../types";
+import { layoutStyles, cardStyles, textStyles } from "../../styles";
 
 interface Props {
     experiences: Experience[];
@@ -37,7 +37,7 @@ export default function Experience({ experiences }: Props) {
                                 <div className={cardStyles.cardDark}>
 
                                     {/* CARD HEADER START */}
-                                    <div className="flex justify-between items-start gap-4 mb-3">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
 
                                         {/* ROLE AND COMPANY START */}
                                         <div>
@@ -51,7 +51,7 @@ export default function Experience({ experiences }: Props) {
                                         {/* ROLE AND COMPANY END */}
 
                                         {/* DATE AND LOCATION START */}
-                                        <div className="flex flex-col items-end gap-1 shrink-0">
+                                        <div className="flex flex-col sm:items-end gap-1">
                                             <span className={`${textStyles.muted} text-xs`}>
                                                 {exp.startDate} - {exp.endDate}
                                             </span>

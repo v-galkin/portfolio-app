@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Auth } from "../../Admin";
+import type { Auth } from "../../pages/Admin.tsx";
 import type { Skill } from "../../types";
 import { getSkills } from "../../api/client";
 import { createSkill, updateSkill, deleteSkill } from "../../api/admin";
@@ -38,15 +38,30 @@ export default function SkillsTab({ auth }: Props) {
     return (
         <div>
             {/* HEADER START */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
                 <h2 className={textStyles.h2}>Skills</h2>
                 <button onClick={openAdd} className={buttonStyles.primary}>+ Add Skill Category</button>
             </div>
             {/* HEADER END */}
 
-            {/* TABLE START */}
-            <div className="border border-slate-700 rounded-xl overflow-hidden">
-                <table className={tableStyles.table}>
+            {/* MOBILE CARDS START */}
+            <div className="flex flex-col gap-3 sm:hidden">
+                {skills.map((skill) => (
+                    <div key={skill.id} className="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col gap-2">
+                        <p className="text-white text-sm font-medium">{skill.category}</p>
+                        <p className="text-slate-400 text-xs">{skill.items.join(", ")}</p>
+                        <div className="flex gap-2 mt-1">
+                            <button onClick={() => openEdit(skill)} className={`${buttonStyles.sm} ${buttonStyles.primary}`}>Edit</button>
+                            <button onClick={() => setDeleteId(skill.id)} className={`${buttonStyles.sm} ${buttonStyles.danger}`}>Delete</button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            {/* MOBILE CARDS END */}
+
+            {/* DESKTOP TABLE START */}
+            <div className="hidden sm:block border border-slate-700 rounded-xl overflow-hidden">
+                <table className={`${tableStyles.table} min-w-[500px]`}>
                     <thead className={tableStyles.thead}>
                     <tr>
                         <th className={tableStyles.th}>Category</th>
@@ -68,7 +83,7 @@ export default function SkillsTab({ auth }: Props) {
                     </tbody>
                 </table>
             </div>
-            {/* TABLE END */}
+            {/* DESKTOP TABLE END */}
 
             {/* ADD/EDIT MODAL START */}
             {showModal && (
