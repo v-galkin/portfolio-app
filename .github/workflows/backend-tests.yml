@@ -34,7 +34,7 @@ jobs:
 
       - name: Run tests
         working-directory: backend
-        run: ./mvnw test
+        run: ./mvnw test -Dspring.datasource.url=jdbc:h2:mem:testdb -Dspring.datasource.driver-class-name=org.h2.Driver -Dspring.jpa.database-platform=org.hibernate.dialect.H2Dialect -Dspring.sql.init.mode=never -Dadmin.username=admin -Dadmin.password=admin
 
       - name: Print surefire reports on failure
         if: failure()
