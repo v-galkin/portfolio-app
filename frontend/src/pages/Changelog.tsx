@@ -56,7 +56,7 @@ export default function Changelog() {
                                             </div>
                                         </div>
                                         {entry.description && (
-                                            <p className={`${textStyles.body} mt-1`}>{entry.description}</p>
+                                            <p className={`${textStyles.body} mt-1 whitespace-pre-line`}>{entry.description}</p>
                                         )}
                                     </div>
                                     {/* ENTRY CARD END */}
