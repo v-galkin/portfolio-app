@@ -35,3 +35,8 @@ jobs:
       - name: Run tests
         working-directory: backend
         run: ./mvnw test
+
+      - name: Print surefire reports on failure
+        if: failure()
+        working-directory: backend
+        run: cat target/surefire-reports/*.txt
