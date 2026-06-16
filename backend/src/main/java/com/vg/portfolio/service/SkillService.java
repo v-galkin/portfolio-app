@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Skill;
 import com.vg.portfolio.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class SkillService {
 
     public Skill getById(Long id) {
         return skillRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Skill not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Skill not found with id: " + id));
     }
 
     public Skill create(Skill skill) {

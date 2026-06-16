@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import Navbar from "../components/portfolio/Navbar.tsx";
 import ProjectsTab from "../components/admin/ProjectsTab.tsx";
 import ExperiencesTab from "../components/admin/ExperiencesTab.tsx";
@@ -53,6 +52,8 @@ export default function Admin({ auth, setAuth }: Props) {
     };
 
     // LOGIN FORM START
+    // Admin manages its own navbar — shows it only after login
+    // main.tsx hides the global navbar for /admin so there's no double navbar
     if (!auth) {
         return (
             <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4">
@@ -118,7 +119,7 @@ export default function Admin({ auth, setAuth }: Props) {
     return (
         <div className="min-h-screen bg-slate-900 text-slate-100">
 
-            {/* NAVBAR START */}
+            {/* NAVBAR START — rendered here (not globally) so it only shows post-login */}
             <Navbar auth={auth} setAuth={setAuth} />
             {/* NAVBAR END */}
 
@@ -144,12 +145,12 @@ export default function Admin({ auth, setAuth }: Props) {
 
             {/* TAB CONTENT START */}
             <main className="py-6 max-w-6xl mx-auto">
-                {activeTab === "Projects" && <ProjectsTab auth={auth} />}
-                {activeTab === "Experiences" && <ExperiencesTab auth={auth} />}
-                {activeTab === "Education" && <EducationTab auth={auth} />}
-                {activeTab === "Skills" && <SkillsTab auth={auth} />}
+                {activeTab === "Projects"       && <ProjectsTab auth={auth} />}
+                {activeTab === "Experiences"    && <ExperiencesTab auth={auth} />}
+                {activeTab === "Education"      && <EducationTab auth={auth} />}
+                {activeTab === "Skills"         && <SkillsTab auth={auth} />}
                 {activeTab === "Certifications" && <CertificationsTab auth={auth} />}
-                {activeTab === "History" && <HistoryTab auth={auth} />}
+                {activeTab === "History"        && <HistoryTab auth={auth} />}
             </main>
             {/* TAB CONTENT END */}
 

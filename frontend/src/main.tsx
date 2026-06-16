@@ -1,15 +1,11 @@
 import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import './index.css'
-import App from './pages/App.tsx'
-import Admin from './pages/Admin.tsx'
-import Docker from './pages/Docker.tsx'
-import Changelog from './pages/Changelog.tsx'
+import Layout from './components/Layout.tsx'
 import type { Auth } from './pages/Admin.tsx'
 
-// eslint-disable-next-line react-refresh/only-export-components
-function Root() {
+export function Root() {
     const [auth, setAuth] = useState<Auth | null>(() => {
         const stored = sessionStorage.getItem('auth');
         return stored ? JSON.parse(stored) as Auth : null;
@@ -26,12 +22,7 @@ function Root() {
 
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<App auth={auth} setAuth={handleSetAuth} />} />
-                <Route path="/admin" element={<Admin auth={auth} setAuth={handleSetAuth} />} />
-                <Route path="/docker" element={<Docker auth={auth} setAuth={handleSetAuth} />} />
-                <Route path="/history" element={<Changelog auth={auth} setAuth={handleSetAuth} />} />
-            </Routes>
+            <Layout auth={auth} setAuth={handleSetAuth} />
         </BrowserRouter>
     );
 }

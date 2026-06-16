@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Experience;
 import com.vg.portfolio.repository.ExperienceRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class ExperienceService {
 
     public Experience getById(Long id) {
         return experienceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Experience not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + id));
     }
 
     public Experience create(Experience experience) {

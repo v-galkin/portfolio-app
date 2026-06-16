@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Education;
 import com.vg.portfolio.repository.EducationRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class EducationService {
 
     public Education getById(Long id) {
         return educationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Education not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Education not found with id: " + id));
     }
 
     public Education create(Education education) {

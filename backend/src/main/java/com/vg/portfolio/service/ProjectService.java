@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Project;
 import com.vg.portfolio.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class ProjectService {
 
     public Project getById(Long id) {
         return projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
     }
 
     public Project create(Project project) {

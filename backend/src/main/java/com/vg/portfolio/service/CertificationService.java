@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Certification;
 import com.vg.portfolio.repository.CertificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class CertificationService {
 
     public Certification getById(Long id) {
         return certificationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Certification not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Certification not found with id: " + id));
     }
 
     public Certification create(Certification certification) {

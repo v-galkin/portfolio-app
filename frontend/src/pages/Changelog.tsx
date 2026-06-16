@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/portfolio/Navbar.tsx";
 import { layoutStyles, textStyles, cardStyles } from "../styles";
 import type { HistoryEntry } from "../types";
-import type { Auth } from "./Admin.tsx";
 import { getHistory } from "../api/client";
-
-interface Props {
-    auth: Auth | null;
-    setAuth: (auth: Auth | null) => void;
-}
 
 const categoryColors: Record<string, string> = {
     Infrastructure: "bg-blue-900/40 text-blue-400 border border-blue-800/50",
@@ -19,7 +12,7 @@ const categoryColors: Record<string, string> = {
     Other:          "bg-slate-700 text-slate-300 border border-slate-600",
 };
 
-export default function Changelog({ auth, setAuth }: Props) {
+export default function Changelog() {
     const [entries, setEntries] = useState<HistoryEntry[]>([]);
 
     useEffect(() => {
@@ -29,10 +22,6 @@ export default function Changelog({ auth, setAuth }: Props) {
     return (
         /* PAGE START */
         <div className="min-h-screen bg-slate-900 text-slate-100">
-
-            {/* NAVBAR START */}
-            <Navbar auth={auth} setAuth={setAuth} />
-            {/* NAVBAR END */}
 
             {/* SECTION START */}
             <section className={layoutStyles.section}>

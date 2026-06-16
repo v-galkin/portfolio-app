@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/portfolio/Navbar.tsx";
 import About from "../components/portfolio/About.tsx";
 import Experience from "../components/portfolio/Experience.tsx";
 import Education from "../components/portfolio/Education.tsx";
@@ -21,14 +20,8 @@ import type {
     Certification,
     Skill,
 } from "../types";
-import type { Auth } from "./Admin.tsx";
 
-interface Props {
-    auth: Auth | null;
-    setAuth: (auth: Auth | null) => void;
-}
-
-function App({ auth, setAuth }: Props) {
+function App() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [experiences, setExperiences] = useState<ExperienceType[]>([]);
     const [educations, setEducations] = useState<EducationType[]>([]);
@@ -73,10 +66,6 @@ function App({ auth, setAuth }: Props) {
     return (
         /* PAGE START */
         <div className="min-h-screen bg-slate-900 text-slate-100">
-
-            {/* NAVBAR START */}
-            <Navbar auth={auth} setAuth={setAuth} />
-            {/* NAVBAR END */}
 
             {/* SECTIONS START */}
             <About />

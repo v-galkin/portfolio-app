@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.HistoryEntry;
 import com.vg.portfolio.repository.HistoryEntryRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class HistoryEntryService {
 
     public HistoryEntry getById(Long id) {
         return historyEntryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("History entry not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("History entry not found with id: " + id));
     }
 
     public HistoryEntry create(HistoryEntry entry) {
