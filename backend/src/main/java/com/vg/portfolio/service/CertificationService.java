@@ -36,6 +36,9 @@ public class CertificationService {
     }
 
     public void delete(Long id) {
+        if (!certificationRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Certification not found with id: " + id);
+        }
         certificationRepository.deleteById(id);
     }
 }

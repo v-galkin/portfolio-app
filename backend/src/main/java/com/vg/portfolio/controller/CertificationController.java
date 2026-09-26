@@ -1,7 +1,9 @@
 package com.vg.portfolio.controller;
 
-import com.vg.portfolio.model.Certification;
+import com.vg.portfolio.dto.CertificationRequest;
+import com.vg.portfolio.dto.CertificationResponse;
 import com.vg.portfolio.service.CertificationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +17,24 @@ public class CertificationController {
     private final CertificationService certificationService;
 
     @GetMapping
-    public ResponseEntity<List<Certification>> getAll() {
-        return ResponseEntity.ok(certificationService.getAll());
+    public ResponseEntity<List<CertificationResponse>> getAll() {
+        return ResponseEntity.ok(certificationService.getAll().stream().map(CertificationResponse::from).toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Certification> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(certificationService.getById(id));
+    public ResponseEntity<CertificationResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(CertificationResponse.from(certificationService.getById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Certification> create(@RequestBody Certification certification) {
-        return ResponseEntity.ok(certificationService.create(certification));
+    public ResponseEntity<CertificationResponse> create(@Valid @RequestBody CertificationRequest request) {
+        return ResponseEntity.ok(CertificationResponse.from(certificationService.create(request.toEntity())));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Certification> update(@PathVariable Long id,
-                                                @RequestBody Certification certification) {
-        return ResponseEntity.ok(certificationService.update(id, certification));
+    public ResponseEntity<CertificationResponse> update(@PathVariable Long id,
+                                                @Valid @RequestBody CertificationRequest request) {
+        return ResponseEntity.ok(CertificationResponse.from(certificationService.update(id, request.toEntity())));
     }
 
     @DeleteMapping("/{id}")

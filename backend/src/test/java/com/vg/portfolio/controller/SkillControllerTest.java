@@ -1,6 +1,7 @@
 package com.vg.portfolio.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Skill;
 import com.vg.portfolio.service.SkillService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
@@ -100,5 +102,60 @@ class SkillControllerTest {
         mockMvc.perform(delete("/api/skills/1")
                         .with(httpBasic("admin", "admin")))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void delete_returns404_whenNotFound() throws Exception {
+        doThrow(new ResourceNotFoundException("Skill not found with id: 99"))
+                .when(skillService).delete(99L);
+
+        mockMvc.perform(delete("/api/skills/99")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void create_returns400_whenRequiredFieldsMissing() throws Exception {
+        mockMvc.perform(post("/api/skills")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Validation failed"))
+                .andExpect(jsonPath("$.fields").isMap());
+
+        verify(skillService, never()).create(any());
+    }
+
+    @Test
+    void update_returns400_whenRequiredFieldsMissing() throws Exception {
+        mockMvc.perform(put("/api/skills/1")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+
+        verify(skillService, never()).update(any(), any());
+    }
+
+    @Test
+    void getAll_returns500_withGenericMessage_whenUnexpectedError() throws Exception {
+        when(skillService.getAll()).thenThrow(new RuntimeException("database password is hunter2"));
+
+        mockMvc.perform(get("/api/skills"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").value("Internal server error"));
+    }
+
+    @Test
+    void create_returns409_whenDataIntegrityViolated() throws Exception {
+        when(skillService.create(any())).thenThrow(new DataIntegrityViolationException("duplicate key"));
+
+        mockMvc.perform(post("/api/skills")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"category\": \"Backend\", \"items\": [\"Java\"]}"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error").value("Data integrity violation"));
     }
 }

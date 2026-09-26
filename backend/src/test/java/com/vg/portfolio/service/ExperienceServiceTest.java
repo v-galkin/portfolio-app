@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Experience;
 import com.vg.portfolio.repository.ExperienceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -126,5 +127,29 @@ class ExperienceServiceTest {
         assertThat(result.getResponsibilities()).containsExactly("Architected platform", "Mentored juniors");
         verify(experienceRepository).findById(1L);
         verify(experienceRepository).save(any(Experience.class));
+    }
+
+    // -------------------------------------------------------------------------
+    // delete
+    // -------------------------------------------------------------------------
+
+    @Test
+    void delete_callsRepository_whenExists() {
+        when(experienceRepository.existsById(1L)).thenReturn(true);
+
+        experienceService.delete(1L);
+
+        verify(experienceRepository).deleteById(1L);
+    }
+
+    @Test
+    void delete_throwsException_whenNotFound() {
+        when(experienceRepository.existsById(99L)).thenReturn(false);
+
+        assertThatThrownBy(() -> experienceService.delete(99L))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("99");
+
+        verify(experienceRepository, never()).deleteById(any());
     }
 }

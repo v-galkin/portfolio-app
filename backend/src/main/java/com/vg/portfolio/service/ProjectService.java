@@ -47,6 +47,9 @@ public class ProjectService {
     }
 
     public void delete(Long id) {
+        if (!projectRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Project not found with id: " + id);
+        }
         projectRepository.deleteById(id);
     }
 }

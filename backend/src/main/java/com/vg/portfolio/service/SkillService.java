@@ -34,6 +34,9 @@ public class SkillService {
     }
 
     public void delete(Long id) {
+        if (!skillRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Skill not found with id: " + id);
+        }
         skillRepository.deleteById(id);
     }
 }

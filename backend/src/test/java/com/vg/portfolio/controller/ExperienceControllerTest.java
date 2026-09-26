@@ -114,4 +114,38 @@ class ExperienceControllerTest {
                         .with(httpBasic("admin", "admin")))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void delete_returns404_whenNotFound() throws Exception {
+        doThrow(new ResourceNotFoundException("Experience not found with id: 99"))
+                .when(experienceService).delete(99L);
+
+        mockMvc.perform(delete("/api/experiences/99")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void create_returns400_whenRequiredFieldsMissing() throws Exception {
+        mockMvc.perform(post("/api/experiences")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Validation failed"))
+                .andExpect(jsonPath("$.fields").isMap());
+
+        verify(experienceService, never()).create(any());
+    }
+
+    @Test
+    void update_returns400_whenRequiredFieldsMissing() throws Exception {
+        mockMvc.perform(put("/api/experiences/1")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+
+        verify(experienceService, never()).update(any(), any());
+    }
 }

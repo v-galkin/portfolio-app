@@ -1,17 +1,11 @@
 import axios from "axios";
 
+/** The one axios instance for the backend. Resources are in resources.ts, auth in auth.ts. */
 const client = axios.create({
     baseURL: "/api",
     headers: {
         "Content-Type": "application/json",
     },
 });
-
-export const getProjects = () => client.get("/projects");
-export const getExperiences = () => client.get("/experiences");
-export const getEducations = () => client.get("/educations");
-export const getCertifications = () => client.get("/certifications");
-export const getSkills = () => client.get("/skills");
-export const getHistory = () => client.get("/history");
 
 export default client;

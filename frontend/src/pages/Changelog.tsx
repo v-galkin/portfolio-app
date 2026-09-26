@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
-import { layoutStyles, textStyles, cardStyles } from "../styles";
+import Section from "../components/ui/Section";
+import Card from "../components/ui/Card";
+import Timeline, { TimelineItem } from "../components/ui/Timeline";
+import Footer from "../components/ui/Footer";
 import type { HistoryEntry } from "../types";
-import { getHistory } from "../api/client";
+import { historyApi } from "../api/resources";
+import LoadErrorBanner from "../components/portfolio/LoadErrorBanner.tsx";
 
 const categoryColors: Record<string, string> = {
     Infrastructure: "bg-blue-900/40 text-blue-400 border border-blue-800/50",
@@ -14,71 +18,58 @@ const categoryColors: Record<string, string> = {
 
 export default function Changelog() {
     const [entries, setEntries] = useState<HistoryEntry[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [loadFailed, setLoadFailed] = useState(false);
+    const [reloadKey, setReloadKey] = useState(0);
 
     useEffect(() => {
-        getHistory().then((res) => setEntries(res.data));
-    }, []);
+        historyApi.list()
+            .then((res) => {
+                setEntries(res.data);
+                setLoadFailed(false);
+            })
+            .catch(() => setLoadFailed(true))
+            .finally(() => setLoading(false));
+    }, [reloadKey]);
+
+    const retry = () => {
+        setLoading(true);
+        setReloadKey((key) => key + 1);
+    };
 
     return (
-        /* PAGE START */
         <div className="min-h-screen bg-slate-900 text-slate-100">
-
-            {/* SECTION START */}
-            <section className={layoutStyles.section}>
-                <div className={layoutStyles.container}>
-
-                    {/* TITLE START */}
-                    <h2 className={layoutStyles.sectionTitle}>Changelog</h2>
-                    {/* TITLE END */}
-
-                    {/* TIMELINE START */}
-                    <div className="flex flex-col gap-6 pl-6 border-l-2 border-slate-700">
-
-                        {entries.length === 0 ? (
-                            <p className={textStyles.secondary}>No history entries yet.</p>
-                        ) : (
-                            entries.map((entry) => (
-                                <div key={entry.id} className="relative">
-
-                                    {/* TIMELINE MARKER START */}
-                                    <div className="absolute -left-[31px] top-5 w-3 h-3 rounded-full bg-slate-500 border-2 border-slate-900" />
-                                    {/* TIMELINE MARKER END */}
-
-                                    {/* ENTRY CARD START */}
-                                    <div className={cardStyles.cardDark}>
-                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
-                                            <h3 className={textStyles.h3}>{entry.title}</h3>
-                                            <div className="flex items-center gap-2 shrink-0">
-                                                <span className={`text-xs px-2 py-0.5 rounded-md ${categoryColors[entry.category] ?? categoryColors.Other}`}>
-                                                    {entry.category}
-                                                </span>
-                                                <span className={`${textStyles.muted} text-xs`}>{entry.date}</span>
-                                            </div>
+            <Section title="Changelog">
+                <Timeline>
+                    {loading ? (
+                        <p className="text-slate-500">Loading...</p>
+                    ) : loadFailed ? (
+                        <LoadErrorBanner message="The changelog couldn't be loaded. Please check your connection and try again." onRetry={retry} />
+                    ) : entries.length === 0 ? (
+                        <p className="text-slate-500">No history entries yet.</p>
+                    ) : (
+                        entries.map((entry) => (
+                            <TimelineItem key={entry.id}>
+                                <Card variant="dark">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+                                        <h3 className="text-base font-semibold text-white">{entry.title}</h3>
+                                        <div className="flex items-center gap-2 shrink-0">
+                                            <span className={`text-xs px-2 py-0.5 rounded-md ${categoryColors[entry.category] ?? categoryColors.Other}`}>
+                                                {entry.category}
+                                            </span>
+                                            <span className="text-slate-400 text-xs">{entry.date}</span>
                                         </div>
-                                        {entry.description && (
-                                            <p className={`${textStyles.body} mt-1 whitespace-pre-line`}>{entry.description}</p>
-                                        )}
                                     </div>
-                                    {/* ENTRY CARD END */}
-
-                                </div>
-                            ))
-                        )}
-
-                    </div>
-                    {/* TIMELINE END */}
-
-                </div>
-            </section>
-            {/* SECTION END */}
-
-            {/* FOOTER START */}
-            <footer className="text-center py-4 text-slate-500 text-sm border-t border-slate-800">
-                Vitalii Galkin © 2026
-            </footer>
-            {/* FOOTER END */}
-
+                                    {entry.description && (
+                                        <p className="text-sm leading-relaxed text-slate-400 mt-1 whitespace-pre-line">{entry.description}</p>
+                                    )}
+                                </Card>
+                            </TimelineItem>
+                        ))
+                    )}
+                </Timeline>
+            </Section>
+            <Footer />
         </div>
-        /* PAGE END */
     );
 }

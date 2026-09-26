@@ -5,6 +5,7 @@ import com.vg.portfolio.model.Project;
 import com.vg.portfolio.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ import com.vg.portfolio.exception.ResourceNotFoundException;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -153,5 +155,84 @@ class ProjectControllerTest {
         mockMvc.perform(delete("/api/projects/1")
                         .with(httpBasic("admin", "admin")))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void delete_returns404_whenNotFound() throws Exception {
+        doThrow(new ResourceNotFoundException("Project not found with id: 99"))
+                .when(projectService).delete(99L);
+
+        mockMvc.perform(delete("/api/projects/99")
+                        .with(httpBasic("admin", "admin")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void create_returns400_whenRequiredFieldsMissing() throws Exception {
+        mockMvc.perform(post("/api/projects")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Validation failed"))
+                .andExpect(jsonPath("$.fields").isMap());
+
+        verify(projectService, never()).create(any());
+    }
+
+    @Test
+    void update_returns400_whenRequiredFieldsMissing() throws Exception {
+        mockMvc.perform(put("/api/projects/1")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+
+        verify(projectService, never()).update(any(), any());
+    }
+
+    @Test
+    void create_ignoresClientSuppliedId() throws Exception {
+        Project saved = new Project(3L, "New", null, List.of(), null, null, false, "self-built");
+        when(projectService.create(any(Project.class))).thenReturn(saved);
+
+        mockMvc.perform(post("/api/projects")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\": 999, \"name\": \"New\", \"category\": \"self-built\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(3)));
+
+        ArgumentCaptor<Project> captor = ArgumentCaptor.forClass(Project.class);
+        verify(projectService).create(captor.capture());
+        assertThat(captor.getValue().getId()).isNull();
+    }
+
+    @Test
+    void update_ignoresIdInBody() throws Exception {
+        Project saved = new Project(1L, "Updated", null, List.of(), null, null, false, "self-built");
+        when(projectService.update(eq(1L), any(Project.class))).thenReturn(saved);
+
+        mockMvc.perform(put("/api/projects/1")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\": 2, \"name\": \"Updated\", \"category\": \"self-built\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)));
+
+        ArgumentCaptor<Project> captor = ArgumentCaptor.forClass(Project.class);
+        verify(projectService).update(eq(1L), captor.capture());
+        assertThat(captor.getValue().getId()).isNull();
+    }
+
+    @Test
+    void getById_returnsEmptyTechStack_whenNullInDatabase() throws Exception {
+        Project noTech = new Project(5L, "No tech", null, null, null, null, false, "self-built");
+        when(projectService.getById(5L)).thenReturn(noTech);
+
+        mockMvc.perform(get("/api/projects/5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.techStack").isArray())
+                .andExpect(jsonPath("$.techStack", hasSize(0)));
     }
 }

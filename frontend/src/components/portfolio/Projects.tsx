@@ -1,15 +1,26 @@
 import { useState } from "react";
 import type { Project } from "../../types";
-import { layoutStyles, cardStyles, buttonStyles, badgeStyles, textStyles } from "../../styles";
+import Section from "../ui/Section";
+import Card from "../ui/Card";
+import Badge from "../ui/Badge";
+import Tag from "../ui/Tag";
+import { ButtonLink } from "../ui/Button";
+import { PROJECT_CATEGORIES } from "../../constants";
 
 interface Props {
     projects: Project[];
 }
 
-const filters = ["Featured", "AI Assisted", "Self Built", "All"];
-const categoryMap: Record<string, string> = {
-    "AI Assisted": "ai-assisted",
-    "Self Built": "self-built",
+const categoryLabel = (value: string) => PROJECT_CATEGORIES.find((c) => c.value === value)?.label ?? value;
+
+// "Featured", then one filter per category (AI Assisted first, as before), then "All"
+const filters = ["Featured", ...[...PROJECT_CATEGORIES].reverse().map((c) => c.label), "All"];
+
+// The filter toggles only appear here, so their classes live here
+const filterBase = "px-4 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200";
+const filterClasses = {
+    active: `${filterBase} bg-slate-600 text-white`,
+    inactive: `${filterBase} border border-slate-600 hover:border-slate-500 text-slate-400 hover:text-white`,
 };
 
 export default function Projects({ projects }: Props) {
@@ -18,137 +29,89 @@ export default function Projects({ projects }: Props) {
     const filtered = projects.filter((p) => {
         if (activeFilter === "All") return true;
         if (activeFilter === "Featured") return p.featured;
-        return p.category === categoryMap[activeFilter];
+        return categoryLabel(p.category) === activeFilter;
     });
 
     return (
-        /* SECTION START */
-        <section id="projects" className={layoutStyles.sectionAlt}>
-            <div className={layoutStyles.container}>
-
-                {/* SECTION TITLE START */}
-                <h2 className={layoutStyles.sectionTitle}>
-                    Projects
-                </h2>
-                {/* SECTION TITLE END */}
-
-                {/* FILTER BUTTONS START */}
-                <div className="flex gap-2 mb-8 flex-wrap">
-                    {filters.map((filter) => (
-                        <button
-                            key={filter}
-                            onClick={() => setActiveFilter(filter)}
-                            className={
-                                activeFilter === filter
-                                    ? buttonStyles.filterActive
-                                    : buttonStyles.filter
-                            }
-                        >
-                            {filter}
-                        </button>
-                    ))}
-                </div>
-                {/* FILTER BUTTONS END */}
-
-                {/* PROJECT CARDS GRID START */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                    {/* EMPTY STATE START */}
-                    {filtered.length === 0 ? (
-                        <p className={textStyles.secondary}>No projects found.</p>
-                    ) : (
-
-                        /* PROJECT CARD START */
-                        filtered.map((project) => (
-                            <div
-                                key={project.id}
-                                className={`${project.featured ? cardStyles.cardFeatured : cardStyles.cardDark} flex flex-col gap-3 hover:translate-y-[-3px] transition-all duration-200`}
-                            >
-                                {/* CARD HEADER START */}
-                                <div className="flex justify-between items-center gap-2">
-                                    <h3 className={textStyles.h3}>
-                                        {project.name}
-                                    </h3>
-                                    <div className="flex gap-2 shrink-0">
-
-                                        {/* FEATURED BADGE START */}
-                                        {project.featured && (
-                                            <span className={badgeStyles.featured}>
-                                                Featured
-                                            </span>
-                                        )}
-                                        {/* FEATURED BADGE END */}
-
-                                        {/* CATEGORY BADGE START */}
-                                        <span className={
-                                            project.category === "ai-assisted"
-                                                ? badgeStyles.ai
-                                                : badgeStyles.self
-                                        }>
-                                            {project.category === "ai-assisted"
-                                                ? "AI Assisted"
-                                                : "Self Built"}
-                                        </span>
-                                        {/* CATEGORY BADGE END */}
-
-                                    </div>
-                                </div>
-                                {/* CARD HEADER END */}
-
-                                {/* DESCRIPTION START */}
-                                <p className={`${textStyles.body} flex-1`}>
-                                    {project.description}
-                                </p>
-                                {/* DESCRIPTION END */}
-
-                                {/* TECH STACK TAGS START */}
-                                <div className="flex flex-wrap gap-1.5">
-                                    {project.techStack.map((tech) => (
-                                        <span key={tech} className={textStyles.tag}>
-                                            {tech}
-                                        </span>
-                                    ))}
-                                </div>
-                                {/* TECH STACK TAGS END */}
-
-                                {/* ACTION BUTTONS START */}
-                                <div className="flex gap-2">
-                                    <a
-                                        href={project.url.startsWith('http') ? project.url : `${window.location.origin}${project.url}`}
-                                        target={project.url.startsWith('http') ? '_blank' : '_self'}
-                                        rel="noopener noreferrer"
-                                        className={buttonStyles.sm + " " + buttonStyles.primary}
-                                    >
-                                        View Project
-                                    </a>
-                                    <a
-                                        href={project.githubUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={buttonStyles.sm + " " + buttonStyles.secondary}
-                                    >
-                                        GitHub
-                                    </a>
-                                </div>
-                                {/* ACTION BUTTONS END */}
-
-                            </div>
-                            /* PROJECT CARD END */
-                        ))
-                        /* EMPTY STATE END */
-                    )}
-
-                </div>
-                {/* PROJECT CARDS GRID END */}
-
-                {/* PROJECT COUNT START */}
-                <p className={`${textStyles.secondary} text-sm mt-6 text-center`}>
-                    Showing {filtered.length} of {projects.length} projects
-                </p>
-                {/* PROJECT COUNT END */}
-
+        <Section id="projects" title="Projects" alt>
+            <div className="flex gap-2 mb-8 flex-wrap">
+                {filters.map((filter) => (
+                    <button
+                        key={filter}
+                        onClick={() => setActiveFilter(filter)}
+                        className={activeFilter === filter ? filterClasses.active : filterClasses.inactive}
+                    >
+                        {filter}
+                    </button>
+                ))}
             </div>
-        </section>
-        /* SECTION END */
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {filtered.length === 0 ? (
+                    <p className="text-slate-500">No projects found.</p>
+                ) : (
+                    filtered.map((project) => (
+                        <Card
+                            key={project.id}
+                            variant={project.featured ? "featured" : "dark"}
+                            className="flex flex-col gap-3 hover:translate-y-[-3px] transition-all duration-200"
+                        >
+                            <div className="flex justify-between items-center gap-2">
+                                <h3 className="text-base font-semibold text-white">
+                                    {project.name}
+                                </h3>
+                                <div className="flex gap-2 shrink-0">
+                                    {project.featured && <Badge color="emerald">Featured</Badge>}
+                                    {project.category === "ai-assisted"
+                                        ? <Badge color="purple">{categoryLabel("ai-assisted")}</Badge>
+                                        : <Badge color="yellow">{categoryLabel("self-built")}</Badge>}
+                                </div>
+                            </div>
+
+                            <p className="text-sm leading-relaxed text-slate-400 flex-1">
+                                {project.description}
+                            </p>
+
+                            <div className="flex flex-wrap gap-1.5">
+                                {project.techStack.map((tech) => (
+                                    <Tag key={tech}>{tech}</Tag>
+                                ))}
+                            </div>
+
+                            {/* Only show a button when its link is set (empty or null means no button) */}
+                            {(project.url?.trim() || project.githubUrl?.trim()) && (
+                                <div className="flex gap-2">
+                                    {project.url?.trim() && (
+                                        <ButtonLink
+                                            size="sm"
+                                            href={project.url.startsWith('http') ? project.url : `${window.location.origin}${project.url}`}
+                                            target={project.url.startsWith('http') ? '_blank' : '_self'}
+                                            rel="noopener noreferrer"
+                                        >
+                                            View Project
+                                        </ButtonLink>
+                                    )}
+                                    {project.githubUrl?.trim() && (
+                                        <ButtonLink
+                                            variant="secondary"
+                                            size="sm"
+                                            href={project.githubUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            GitHub
+                                        </ButtonLink>
+                                    )}
+                                </div>
+                            )}
+                        </Card>
+                    ))
+                )}
+            </div>
+
+            <p className="text-slate-500 text-sm mt-6 text-center">
+                Showing {filtered.length} of {projects.length} projects
+            </p>
+        </Section>
     );
 }

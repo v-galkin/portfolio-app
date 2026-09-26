@@ -1,141 +1,36 @@
-import { useEffect, useState } from "react";
-import type { Auth } from "../../pages/Admin.tsx";
 import type { Certification } from "../../types";
-import { getCertifications } from "../../api/client";
-import { createCertification, updateCertification, deleteCertification } from "../../api/admin";
-import { textStyles, buttonStyles, tableStyles, modalStyles, formStyles } from "../../styles";
+import { certificationsApi } from "../../api/resources";
+import CrudTab from "./CrudTab";
 
-interface Props { auth: Auth; }
-
-const empty = { name: "", issuer: "", date: "", credentialUrl: "" };
-
-export default function CertificationsTab({ auth }: Props) {
-    const [items, setItems] = useState<Certification[]>([]);
-    const [showModal, setShowModal] = useState(false);
-    const [editItem, setEditItem] = useState<Certification | null>(null);
-    const [form, setForm] = useState(empty);
-    const [deleteId, setDeleteId] = useState<number | null>(null);
-
-    const load = async () => { const res = await getCertifications(); setItems(res.data); };
-    useEffect(() => { load(); }, []);
-
-    const openAdd = () => { setEditItem(null); setForm(empty); setShowModal(true); };
-    const openEdit = (item: Certification) => { setEditItem(item); setForm({ ...item }); setShowModal(true); };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (editItem) { await updateCertification(auth, editItem.id, form); } else { await createCertification(auth, form); }
-        setShowModal(false); load();
-    };
-
-    const handleDelete = async () => {
-        if (deleteId === null) return;
-        await deleteCertification(auth, deleteId); setDeleteId(null); load();
-    };
-
+export default function CertificationsTab({ onUnauthorized }: { onUnauthorized: () => void }) {
     return (
-        <div>
-            {/* HEADER START */}
-            <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
-                <h2 className={textStyles.h2}>Certifications</h2>
-                <button onClick={openAdd} className={buttonStyles.primary}>+ Add Certification</button>
-            </div>
-            {/* HEADER END */}
-
-            {/* MOBILE CARDS START */}
-            <div className="flex flex-col gap-3 sm:hidden">
-                {items.map((item) => (
-                    <div key={item.id} className="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col gap-2">
-                        <div className="flex justify-between items-start gap-2">
-                            <p className="text-white text-sm font-medium">{item.name}</p>
-                            <p className="text-slate-400 text-xs shrink-0">{item.date}</p>
-                        </div>
-                        <p className="text-slate-400 text-xs">{item.issuer}</p>
-                        <div className="flex gap-2 mt-1">
-                            <button onClick={() => openEdit(item)} className={`${buttonStyles.sm} ${buttonStyles.primary}`}>Edit</button>
-                            <button onClick={() => setDeleteId(item.id)} className={`${buttonStyles.sm} ${buttonStyles.danger}`}>Delete</button>
-                        </div>
+        <CrudTab<Certification>
+            title="Certifications"
+            itemName="Certification"
+            api={certificationsApi}
+            empty={{ name: "", issuer: "", date: "", credentialUrl: "" }}
+            tableMinWidth="min-w-[500px]"
+            columns={[
+                { header: "Name", render: (c) => c.name, primary: true },
+                { header: "Issuer", render: (c) => c.issuer },
+                { header: "Date", render: (c) => c.date },
+            ]}
+            mobileCard={(c) => (
+                <>
+                    <div className="flex justify-between items-start gap-2">
+                        <p className="text-white text-sm font-medium">{c.name}</p>
+                        <p className="text-slate-400 text-xs shrink-0">{c.date}</p>
                     </div>
-                ))}
-            </div>
-            {/* MOBILE CARDS END */}
-
-            {/* DESKTOP TABLE START */}
-            <div className="hidden sm:block border border-slate-700 rounded-xl overflow-hidden">
-                <table className={`${tableStyles.table} min-w-[500px]`}>
-                    <thead className={tableStyles.thead}>
-                    <tr>
-                        <th className={tableStyles.th}>Name</th>
-                        <th className={tableStyles.th}>Issuer</th>
-                        <th className={tableStyles.th}>Date</th>
-                        <th className={tableStyles.th}>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {items.map((item) => (
-                        <tr key={item.id} className={tableStyles.tr}>
-                            <td className="px-4 py-3 text-white text-sm">{item.name}</td>
-                            <td className={tableStyles.td}>{item.issuer}</td>
-                            <td className={tableStyles.td}>{item.date}</td>
-                            <td className="px-4 py-3 flex gap-2">
-                                <button onClick={() => openEdit(item)} className={`${buttonStyles.sm} ${buttonStyles.primary}`}>Edit</button>
-                                <button onClick={() => setDeleteId(item.id)} className={`${buttonStyles.sm} ${buttonStyles.danger}`}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-            {/* DESKTOP TABLE END */}
-
-            {/* ADD/EDIT MODAL START */}
-            {showModal && (
-                <div className={modalStyles.overlay}>
-                    <div className={modalStyles.modal}>
-                        <div className={modalStyles.header}>
-                            <h3 className={modalStyles.title}>{editItem ? "Edit Certification" : "Add Certification"}</h3>
-                            <button onClick={() => setShowModal(false)} className={modalStyles.closeBtn}>&times;</button>
-                        </div>
-                        <form onSubmit={handleSubmit} className={modalStyles.body}>
-                            <div className={formStyles.group}>
-                                <label className={formStyles.label}>Name</label>
-                                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className={formStyles.input} />
-                            </div>
-                            <div className={formStyles.group}>
-                                <label className={formStyles.label}>Issuer</label>
-                                <input value={form.issuer} onChange={(e) => setForm({ ...form, issuer: e.target.value })} required className={formStyles.input} />
-                            </div>
-                            <div className={formStyles.group}>
-                                <label className={formStyles.label}>Date</label>
-                                <input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} placeholder="Jan 2025" className={formStyles.input} />
-                            </div>
-                            <div className={formStyles.group}>
-                                <label className={formStyles.label}>Credential URL</label>
-                                <input value={form.credentialUrl} onChange={(e) => setForm({ ...form, credentialUrl: e.target.value })} className={formStyles.input} />
-                            </div>
-                            <div className={modalStyles.footer}>
-                                <button type="submit" className={buttonStyles.primary}>{editItem ? "Save Changes" : "Add Certification"}</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                    <p className="text-slate-400 text-xs">{c.issuer}</p>
+                </>
             )}
-            {/* ADD/EDIT MODAL END */}
-
-            {/* DELETE MODAL START */}
-            {deleteId !== null && (
-                <div className={modalStyles.overlay}>
-                    <div className={modalStyles.modalSm}>
-                        <h3 className={`${textStyles.h3} mb-2`}>Delete Certification</h3>
-                        <p className={`${textStyles.muted} text-sm mb-6`}>Are you sure? This cannot be undone.</p>
-                        <div className={modalStyles.footer}>
-                            <button onClick={() => setDeleteId(null)} className={`flex-1 ${buttonStyles.secondary}`}>Cancel</button>
-                            <button onClick={handleDelete} className={`flex-1 ${buttonStyles.danger}`}>Delete</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-            {/* DELETE MODAL END */}
-        </div>
+            fields={[
+                { type: "text", name: "name", label: "Name", required: true },
+                { type: "text", name: "issuer", label: "Issuer", required: true },
+                { type: "text", name: "date", label: "Date", placeholder: "Jan 2025" },
+                { type: "text", name: "credentialUrl", label: "Credential URL" },
+            ]}
+            onUnauthorized={onUnauthorized}
+        />
     );
 }

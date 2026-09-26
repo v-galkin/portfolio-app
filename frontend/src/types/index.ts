@@ -3,8 +3,8 @@ export interface Project {
     name: string;
     description: string;
     techStack: string[];
-    url: string;
-    githubUrl: string;
+    url: string | null;
+    githubUrl: string | null;
     featured: boolean;
     category: string;
 }
@@ -51,25 +51,11 @@ export interface HistoryEntry {
     category: string;
 }
 
-export interface ContainerInfo {
-    id: string;
-    shortId: string;
+export interface Profile {
     name: string;
-    image: string;
-    status: string;
-    state: string;
-    running: boolean;
-}
-
-export interface ContainerStats {
-    id: string;
-    cpuPercent: number;
-    memoryUsage: number;
-    memoryLimit: number;
-    memoryPercent: number;
-    networkIn: number;
-    networkOut: number;
-    restartCount: number;
-    uptime: string;
-    ports: string;
+    headline: string | null;
+    bio: string | null;
+    githubUrl: string | null;
+    linkedinUrl: string | null;
+    email: string | null;
 }

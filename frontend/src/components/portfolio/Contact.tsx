@@ -1,52 +1,31 @@
-import { layoutStyles, cardStyles, buttonStyles } from "../../styles";
+import Section from "../ui/Section";
+import Card from "../ui/Card";
+import { ButtonLink } from "../ui/Button";
+import type { Profile } from "../../types";
 
-export default function Contact() {
+/** Contact links from the profile (edited in Admin → Profile); empty ones are hidden. */
+export default function Contact({ profile }: { profile: Profile | null }) {
     return (
-        /* SECTION START */
-        <section id="contact" className={layoutStyles.section}>
-            <div className={layoutStyles.container}>
-
-                {/* SECTION TITLE START */}
-                <h2 className={layoutStyles.sectionTitle}>
-                    Contact
-                </h2>
-                {/* SECTION TITLE END */}
-
-                {/* CONTACT CARD START */}
-                <div className={`${cardStyles.card} p-10 text-center`}>
-                    {/* CONTACT BUTTONS START */}
-                    <div className="flex gap-3 justify-center flex-wrap">
-
-                        {/* LINKEDIN BUTTON START */}
-                        <a
-                            href="https://linkedin.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={buttonStyles.secondary}
-                        >
+        <Section id="contact" title="Contact">
+            <Card className="p-10 text-center">
+                <div className="flex gap-3 justify-center flex-wrap">
+                    {profile?.email && (
+                        <ButtonLink variant="secondary" href={`mailto:${profile.email}`}>
+                            Email
+                        </ButtonLink>
+                    )}
+                    {profile?.linkedinUrl && (
+                        <ButtonLink variant="secondary" href={profile.linkedinUrl} target="_blank" rel="noopener noreferrer">
                             LinkedIn
-                        </a>
-                        {/* LINKEDIN BUTTON END */}
-
-                        {/* GITHUB BUTTON START */}
-                        <a
-                            href="https://github.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={buttonStyles.secondary}
-                        >
+                        </ButtonLink>
+                    )}
+                    {profile?.githubUrl && (
+                        <ButtonLink variant="secondary" href={profile.githubUrl} target="_blank" rel="noopener noreferrer">
                             GitHub
-                        </a>
-                        {/* GITHUB BUTTON END */}
-
-                    </div>
-                    {/* CONTACT BUTTONS END */}
-
+                        </ButtonLink>
+                    )}
                 </div>
-                {/* CONTACT CARD END */}
-
-            </div>
-        </section>
-        /* SECTION END */
+            </Card>
+        </Section>
     );
 }

@@ -3,35 +3,24 @@ import Navbar from './portfolio/Navbar.tsx'
 import App from '../pages/App.tsx'
 import Admin from '../pages/Admin.tsx'
 import Changelog from '../pages/Changelog.tsx'
-import type { Auth } from '../pages/Admin.tsx'
+import NotFound from '../pages/NotFound.tsx'
 
-import DockerSentinel from "../pages/retired/DockerSentinel.tsx";
-
-// Routes where the navbar should be hidden
-// (Admin manages its own navbar — shows it only when logged in)
+// Admin renders its own navbar (only after login), so the global one is hidden there
 const HIDDEN_NAVBAR_ROUTES = ['/admin'];
 
-interface Props {
-    auth: Auth | null;
-    setAuth: (auth: Auth | null) => void;
-}
-
-export default function Layout({ auth, setAuth }: Props) {
+export default function Layout() {
     const location = useLocation();
     const hideNavbar = HIDDEN_NAVBAR_ROUTES.includes(location.pathname);
 
     return (
         <>
-            {/* GLOBAL NAVBAR — hidden on routes that manage their own navbar */}
-            {!hideNavbar && <Navbar auth={auth} setAuth={setAuth} />}
+            {!hideNavbar && <Navbar />}
 
             <Routes>
                 <Route path="/"        element={<App />} />
-                <Route path="/admin"   element={<Admin auth={auth} setAuth={setAuth} />} />
+                <Route path="/admin"   element={<Admin />} />
                 <Route path="/history" element={<Changelog />} />
-
-                {/* RETIRED PROJECTS — navbar inherited automatically */}
-                <Route path="/projects/docker-sentinel" element={<DockerSentinel />} />
+                <Route path="*"        element={<NotFound />} />
             </Routes>
         </>
     );

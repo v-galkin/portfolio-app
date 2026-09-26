@@ -38,6 +38,9 @@ public class EducationService {
     }
 
     public void delete(Long id) {
+        if (!educationRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Education not found with id: " + id);
+        }
         educationRepository.deleteById(id);
     }
 }
