@@ -19,6 +19,9 @@ services:
       - portfolio-network
   portfolio-backend:
     container_name: portfolio-backend
+    # Built and pushed by CI (.github/workflows/ci-cd.yml); the server pulls it.
+    # `build` stays so `docker compose up --build` still works locally.
+    image: ghcr.io/v-galkin/portfolio-app-backend:latest
     build: ./backend
     env_file:
       - .env
@@ -37,24 +40,16 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 60s
+      # Startup takes ~2 minutes on the server; failed checks don't count until this has passed
+      start_period: 180s
     mem_limit: 512m
     restart: unless-stopped
     networks:
       - portfolio-network
-  portfolio-frontend:
-    container_name: portfolio-frontend
-    build: ./frontend
-    volumes:
-      - dist:/dist
-    depends_on:
-      - portfolio-backend
-    restart: no
-    networks:
-      - portfolio-network
+  # No frontend container: CI builds the React app and rsyncs it to /srv/www/portfolio
+  # on the server, which the shared nginx serves (see DEPLOYMENT.md).
 volumes:
   postgres_data:
-  dist:
 networks:
   portfolio-network:
     external: true

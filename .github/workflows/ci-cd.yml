@@ -1,0 +1,158 @@
+name: CI/CD
+
+# Pull requests: test the backend and check the frontend (lint + build).
+# Push to main (or a manual run): the same checks, then build and push the backend image
+# to GHCR and deploy both parts to the server.
+#
+# Secrets (same as weather-metrics): VPS_HOST, VPS_USER, VPS_SSH_KEY (github_actions_deploy key).
+# Server prerequisites: see DEPLOYMENT.md (repo cloned at ~/portfolio-app with .env,
+# /srv/www/portfolio served by the shared nginx).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  IMAGE: ghcr.io/v-galkin/portfolio-app-backend
+  SITE_URL: https://vg-portfolio.duckdns.org
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+      - name: Run tests
+        working-directory: backend
+        run: ./mvnw -B test
+      - name: Print test reports on failure
+        if: failure()
+        working-directory: backend
+        run: cat target/surefire-reports/*.txt
+
+  frontend-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+          retention-days: 7
+
+  build-and-push:
+    needs: [backend-test, frontend-check]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          # :latest is what the server runs; the commit tag makes rollbacks easy
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    concurrency: deploy-portfolio
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist
+
+      - name: Set up SSH
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
+
+      # Backend first: if it fails, the old frontend keeps running against the old backend.
+      - name: Deploy backend
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The image is private: log the server in with this run's short-lived token,
+          # pull, then log out again, so no long-lived credentials stay on the server.
+          printf '%s' "$GHCR_TOKEN" | ssh -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" \
+            "docker login ghcr.io -u '${{ github.actor }}' --password-stdin"
+          ssh -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" '
+            set -e
+            cd ~/portfolio-app
+            git pull --ff-only
+            docker compose pull portfolio-backend
+            docker logout ghcr.io
+            docker compose up -d portfolio-db portfolio-backend
+          '
+
+      - name: Wait until the backend is healthy
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          # Startup takes ~2 minutes on the server, so allow up to 5
+          ssh -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" '
+            for i in $(seq 1 60); do
+              status=$(docker inspect -f "{{.State.Health.Status}}" portfolio-backend)
+              echo "backend health: $status"
+              if [ "$status" = "healthy" ]; then docker image prune -f > /dev/null; exit 0; fi
+              sleep 5
+            done
+            echo "Backend did not become healthy" >&2
+            docker logs --tail 80 portfolio-backend >&2
+            exit 1
+          '
+
+      - name: Deploy frontend
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          test -f dist/index.html
+          # --delete removes files from the previous build (Vite hashes file names)
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" dist/ "$VPS_USER@$VPS_HOST:/srv/www/portfolio/"
+
+      - name: Smoke test
+        run: |
+          curl -fsS --retry 6 --retry-delay 5 --retry-connrefused "$SITE_URL/" | grep -q '<div id="root">'
+          curl -fsS --retry 6 --retry-delay 5 --retry-connrefused "$SITE_URL/api/profile" | grep -q '"name"'
+          echo "Site and API are up"
