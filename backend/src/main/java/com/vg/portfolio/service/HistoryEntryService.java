@@ -36,6 +36,9 @@ public class HistoryEntryService {
     }
 
     public void delete(Long id) {
+        if (!historyEntryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("History entry not found with id: " + id);
+        }
         historyEntryRepository.deleteById(id);
     }
 }

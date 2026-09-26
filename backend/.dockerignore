@@ -1,0 +1,2 @@
+# Local credentials must never end up in an image
+.env

@@ -45,14 +45,14 @@ class SecurityIntegrationTest {
     }
 
     @Test
-    void postProject_returns403_whenWrongCredentials() throws Exception {
+    void postProject_returns401_whenWrongCredentials() throws Exception {
         Project newProject = new Project(null, "Test", "Desc", List.of(), null, null, false, "self-built");
 
         mockMvc.perform(post("/api/projects")
                         .with(httpBasic("wronguser", "wrongpass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newProject)))
-                .andExpect(status().isUnauthorized()); // Spring Security returns 401 on bad credentials
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

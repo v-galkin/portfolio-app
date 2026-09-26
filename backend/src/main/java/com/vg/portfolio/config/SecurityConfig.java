@@ -1,5 +1,7 @@
 package com.vg.portfolio.config;
 
+import com.vg.portfolio.security.LoginAttemptFilter;
+import com.vg.portfolio.security.LoginAttemptService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,15 +42,38 @@ public class SecurityConfig {
     private String corsAllowedOrigins;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   LoginAttemptService loginAttemptService) throws Exception {
         http
+                .addFilterBefore(new LoginAttemptFilter(loginAttemptService), BasicAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
+                // The admin panel logs in once (POST /api/auth/login) and then uses a session cookie
+                // (HttpOnly, SameSite=Strict; see application.properties). Only that endpoint creates
+                // a session: Basic auth on other requests stays stateless, e.g. for curl and tests.
+                // CSRF stays disabled: SameSite=Strict keeps the cookie off cross-site requests.
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+                // Read the login from an existing session, but never create one here, otherwise
+                // every Basic-auth request would start a session. AuthController creates it on login.
+                .securityContext(context -> context.securityContextRepository(new DelegatingSecurityContextRepository(
+                        new RequestAttributeSecurityContextRepository(), existingSessionsOnly())))
+                // Don't store rejected requests in a session to replay after login (browser-form feature)
+                .requestCache(cache -> cache.requestCache(new NullRequestCache()))
+                .logout(logout -> logout
+                        .logoutRequestMatcher(PathPatternRequestMatcher.withDefaults()
+                                .matcher(HttpMethod.POST, "/api/auth/logout"))
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(204))
+                        .deleteCookies("JSESSIONID")
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Spring Boot forwards errors (404, 400, 500) to /error to build the response;
+                        // without this, anonymous callers get 401 instead of the real status
+                        .requestMatchers("/error").permitAll()
+                        // Docker's health check calls this without credentials
+                        .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
@@ -59,6 +90,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    private static HttpSessionSecurityContextRepository existingSessionsOnly() {
+        HttpSessionSecurityContextRepository repository = new HttpSessionSecurityContextRepository();
+        repository.setAllowSessionCreation(false);
+        return repository;
+    }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -73,6 +110,13 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
+        // docker-compose passes unset variables as empty strings, so check for blank, not just missing
+        if (adminUsername == null || adminUsername.isBlank()
+                || adminPassword == null || adminPassword.isBlank()) {
+            throw new IllegalStateException(
+                    "ADMIN_USERNAME and ADMIN_PASSWORD must be set to non-empty values");
+        }
+
         UserDetails admin = User.builder()
                 .username(adminUsername)
                 .password(passwordEncoder().encode(adminPassword))

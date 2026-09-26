@@ -1,5 +1,6 @@
 package com.vg.portfolio.service;
 
+import com.vg.portfolio.exception.ResourceNotFoundException;
 import com.vg.portfolio.model.Project;
 import com.vg.portfolio.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -164,11 +165,22 @@ class ProjectServiceTest {
     // -------------------------------------------------------------------------
 
     @Test
-    void delete_callsRepository() {
-        doNothing().when(projectRepository).deleteById(1L);
+    void delete_callsRepository_whenExists() {
+        when(projectRepository.existsById(1L)).thenReturn(true);
 
         projectService.delete(1L);
 
         verify(projectRepository).deleteById(1L);
+    }
+
+    @Test
+    void delete_throwsException_whenNotFound() {
+        when(projectRepository.existsById(99L)).thenReturn(false);
+
+        assertThatThrownBy(() -> projectService.delete(99L))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("99");
+
+        verify(projectRepository, never()).deleteById(any());
     }
 }

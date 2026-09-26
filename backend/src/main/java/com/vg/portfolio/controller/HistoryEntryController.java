@@ -1,7 +1,9 @@
 package com.vg.portfolio.controller;
 
-import com.vg.portfolio.model.HistoryEntry;
+import com.vg.portfolio.dto.HistoryEntryRequest;
+import com.vg.portfolio.dto.HistoryEntryResponse;
 import com.vg.portfolio.service.HistoryEntryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +17,24 @@ public class HistoryEntryController {
     private final HistoryEntryService historyEntryService;
 
     @GetMapping
-    public ResponseEntity<List<HistoryEntry>> getAll() {
-        return ResponseEntity.ok(historyEntryService.getAll());
+    public ResponseEntity<List<HistoryEntryResponse>> getAll() {
+        return ResponseEntity.ok(historyEntryService.getAll().stream().map(HistoryEntryResponse::from).toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HistoryEntry> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(historyEntryService.getById(id));
+    public ResponseEntity<HistoryEntryResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(HistoryEntryResponse.from(historyEntryService.getById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<HistoryEntry> create(@RequestBody HistoryEntry entry) {
-        return ResponseEntity.ok(historyEntryService.create(entry));
+    public ResponseEntity<HistoryEntryResponse> create(@Valid @RequestBody HistoryEntryRequest request) {
+        return ResponseEntity.ok(HistoryEntryResponse.from(historyEntryService.create(request.toEntity())));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HistoryEntry> update(@PathVariable Long id,
-                                               @RequestBody HistoryEntry entry) {
-        return ResponseEntity.ok(historyEntryService.update(id, entry));
+    public ResponseEntity<HistoryEntryResponse> update(@PathVariable Long id,
+                                               @Valid @RequestBody HistoryEntryRequest request) {
+        return ResponseEntity.ok(HistoryEntryResponse.from(historyEntryService.update(id, request.toEntity())));
     }
 
     @DeleteMapping("/{id}")

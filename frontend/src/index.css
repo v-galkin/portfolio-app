@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+/* Keep sections linked from the navbar ("/#projects") clear of the sticky navbar */
+html {
+    scroll-padding-top: 4.5rem;
+}

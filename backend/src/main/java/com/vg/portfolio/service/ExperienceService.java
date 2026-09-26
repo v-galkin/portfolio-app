@@ -38,6 +38,9 @@ public class ExperienceService {
     }
 
     public void delete(Long id) {
+        if (!experienceRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Experience not found with id: " + id);
+        }
         experienceRepository.deleteById(id);
     }
 }

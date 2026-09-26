@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: portfolio
       POSTGRES_USER: portfolio_user
-      POSTGRES_PASSWORD: portfolio_pass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -25,15 +25,19 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://portfolio-db:5432/portfolio
       SPRING_DATASOURCE_USERNAME: portfolio_user
-      SPRING_DATASOURCE_PASSWORD: portfolio_pass
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
       ADMIN_USERNAME: ${ADMIN_USERNAME}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       portfolio-db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     mem_limit: 512m
     restart: unless-stopped
     networks:
