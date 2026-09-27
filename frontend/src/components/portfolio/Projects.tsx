@@ -13,8 +13,7 @@ interface Props {
 
 const categoryLabel = (value: string) => PROJECT_CATEGORIES.find((c) => c.value === value)?.label ?? value;
 
-// "Featured", then one filter per category (AI Assisted first), then "All"
-const filters = ["Featured", ...[...PROJECT_CATEGORIES].reverse().map((c) => c.label), "All"];
+const filters = ["Featured", "All"];
 
 const filterBase = "px-4 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200";
 const filterClasses = {
@@ -25,11 +24,7 @@ const filterClasses = {
 export default function Projects({ projects }: Props) {
     const [activeFilter, setActiveFilter] = useState("Featured");
 
-    const filtered = projects.filter((p) => {
-        if (activeFilter === "All") return true;
-        if (activeFilter === "Featured") return p.featured;
-        return categoryLabel(p.category) === activeFilter;
-    });
+    const filtered = activeFilter === "Featured" ? projects.filter((p) => p.featured) : projects;
 
     return (
         <Section id="projects" title="Projects" alt>

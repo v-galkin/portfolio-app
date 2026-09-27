@@ -27,16 +27,18 @@ export default function Certifications({ certifications }: Props) {
                             <p className="text-emerald-400 text-sm font-medium mb-3">
                                 {cert.issuer}
                             </p>
-                            <ButtonLink
-                                variant="secondary"
-                                size="sm"
-                                href={cert.credentialUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block"
-                            >
-                                View Credential
-                            </ButtonLink>
+                            {cert.credentialUrl?.trim() && (
+                                <ButtonLink
+                                    variant="secondary"
+                                    size="sm"
+                                    href={cert.credentialUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-block"
+                                >
+                                    View Credential
+                                </ButtonLink>
+                            )}
                         </Card>
                     ))
                 )}

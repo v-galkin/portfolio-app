@@ -14,7 +14,7 @@ export type FieldConfig<T> =
     | { type: "textarea"; name: Key<T>; label: string; rows: number }
     | { type: "select"; name: Key<T>; label: string; options: { value: string; label: string }[] }
     | { type: "checkbox"; name: Key<T>; label: string }
-    /** A string[] edited as text: comma separated in an input, or one per line in a textarea (with rows). */
+    /** A string[] edited as text: comma separated in an input, or one per line in a textarea. */
     | { type: "list"; name: Key<T>; label: string; separator: "," | "\n"; rows?: number; placeholder?: string }
     /** Two fields side by side. */
     | { type: "row"; fields: FieldConfig<T>[] };
@@ -27,7 +27,7 @@ export interface Column<T> {
 }
 
 interface Props<T extends { id: number }> {
-    /** Heading, e.g. "Certifications". */
+    /** Heading, for example "Certifications". */
     title: string;
     /** Used in "+ Add …", "Edit …" and "Delete …", e.g. "Certification". */
     itemName: string;
