@@ -6,7 +6,7 @@ export interface Project {
     url: string | null;
     githubUrl: string | null;
     featured: boolean;
-    category: string;
+    category: string | null;
 }
 
 export interface Experience {

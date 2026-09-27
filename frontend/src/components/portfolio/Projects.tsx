@@ -5,13 +5,10 @@ import Card from "../ui/Card";
 import Badge from "../ui/Badge";
 import Tag from "../ui/Tag";
 import { ButtonLink } from "../ui/Button";
-import { PROJECT_CATEGORIES } from "../../constants";
 
 interface Props {
     projects: Project[];
 }
-
-const categoryLabel = (value: string) => PROJECT_CATEGORIES.find((c) => c.value === value)?.label ?? value;
 
 const filters = ["Featured", "All"];
 
@@ -56,9 +53,7 @@ export default function Projects({ projects }: Props) {
                                 </h3>
                                 <div className="flex gap-2 shrink-0">
                                     {project.featured && <Badge color="emerald">Featured</Badge>}
-                                    {project.category === "ai-assisted"
-                                        ? <Badge color="purple">{categoryLabel("ai-assisted")}</Badge>
-                                        : <Badge color="yellow">{categoryLabel("self-built")}</Badge>}
+                                    {project.category?.trim() && <Badge color="purple">{project.category}</Badge>}
                                 </div>
                             </div>
 

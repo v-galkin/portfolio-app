@@ -35,6 +35,5 @@ public class Project {
     private String githubUrl;
     private boolean featured;
 
-    @Column(nullable = false)
-    private String category; // "ai-assisted" or "self-built"
+    private String category; // optional label, e.g. "University Final Project"
 }

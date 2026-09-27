@@ -1,7 +1,6 @@
 import type { Project } from "../../types";
 import { projectsApi } from "../../api/resources";
 import CrudTab from "./CrudTab";
-import { PROJECT_CATEGORIES } from "../../constants";
 
 export default function ProjectsTab({ onUnauthorized }: { onUnauthorized: () => void }) {
     return (
@@ -9,11 +8,11 @@ export default function ProjectsTab({ onUnauthorized }: { onUnauthorized: () => 
             title="Projects"
             itemName="Project"
             api={projectsApi}
-            empty={{ name: "", description: "", techStack: [], url: "", githubUrl: "", featured: false, category: "self-built" }}
+            empty={{ name: "", description: "", techStack: [], url: "", githubUrl: "", featured: false, category: "" }}
             tableMinWidth="min-w-[500px]"
             columns={[
                 { header: "Name", render: (p) => p.name, primary: true },
-                { header: "Category", render: (p) => p.category },
+                { header: "Label", render: (p) => p.category },
                 { header: "Featured", render: (p) => (p.featured ? "Yes" : "No") },
             ]}
             mobileCard={(p) => (
@@ -31,7 +30,7 @@ export default function ProjectsTab({ onUnauthorized }: { onUnauthorized: () => 
                 { type: "list", name: "techStack", label: "Tech Stack (comma separated)", separator: ",", placeholder: "Java, Spring Boot, React" },
                 { type: "text", name: "url", label: "URL" },
                 { type: "text", name: "githubUrl", label: "GitHub URL" },
-                { type: "select", name: "category", label: "Category", options: PROJECT_CATEGORIES },
+                { type: "text", name: "category", label: "Label (optional)", placeholder: "University Final Project" },
                 { type: "checkbox", name: "featured", label: "Featured" },
             ]}
             onUnauthorized={onUnauthorized}
