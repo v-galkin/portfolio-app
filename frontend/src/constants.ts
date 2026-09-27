@@ -7,9 +7,3 @@ export const NAV_SECTIONS = [
     { id: "certifications", label: "Certifications" },
     { id: "contact", label: "Contact" },
 ];
-
-/** Project categories as stored by the backend, with their display labels. */
-export const PROJECT_CATEGORIES = [
-    { value: "self-built", label: "Self Built" },
-    { value: "ai-assisted", label: "AI Assisted" },
-];

@@ -12,7 +12,7 @@ public record ProjectRequest(
         String url,
         String githubUrl,
         boolean featured,
-        @NotBlank String category
+        String category
 ) {
 
     public Project toEntity() {
@@ -23,7 +23,7 @@ public record ProjectRequest(
         project.setUrl(url);
         project.setGithubUrl(githubUrl);
         project.setFeatured(featured);
-        project.setCategory(category);
+        project.setCategory(category == null || category.isBlank() ? null : category.trim());
         return project;
     }
 }

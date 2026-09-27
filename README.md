@@ -115,7 +115,7 @@ The schema is created and changed only by the Flyway migrations in `backend/src/
 The server has only 1 GB of RAM and also runs other applications. The backend container is limited to 512 MB (`mem_limit`), and the JVM uses at most 75% of it (`-XX:MaxRAMPercentage=75.0`). With this limit, the backend takes about 2 minutes to start. The Docker health check therefore waits 180 seconds before failed checks count, so the container is not marked unhealthy while it is still starting.
 
 ### Tests use an in-memory database
-The backend has 141 tests. They run against an H2 in-memory database with the `test` profile, so they need neither PostgreSQL nor Docker.
+The backend has 142 tests. They run against an H2 in-memory database with the `test` profile, so they need neither PostgreSQL nor Docker.
 
 The tests cover:
 

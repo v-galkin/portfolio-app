@@ -189,6 +189,22 @@ class ProjectControllerTest {
     }
 
     @Test
+    void create_storesBlankCategoryAsNull() throws Exception {
+        Project saved = new Project(4L, "No label", null, List.of(), null, null, false, null);
+        when(projectService.create(any(Project.class))).thenReturn(saved);
+
+        mockMvc.perform(post("/api/projects")
+                        .with(httpBasic("admin", "admin"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"No label\", \"category\": \"  \"}"))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<Project> captor = ArgumentCaptor.forClass(Project.class);
+        verify(projectService).create(captor.capture());
+        assertThat(captor.getValue().getCategory()).isNull();
+    }
+
+    @Test
     void update_ignoresIdInBody() throws Exception {
         Project saved = new Project(1L, "Updated", null, List.of(), null, null, false, "self-built");
         when(projectService.update(eq(1L), any(Project.class))).thenReturn(saved);
