@@ -17,14 +17,6 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-    public List<Project> getByCategory(String category) {
-        return projectRepository.findByCategory(category);
-    }
-
-    public List<Project> getFeatured() {
-        return projectRepository.findByFeaturedTrue();
-    }
-
     public Project getById(Long id) {
         return projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));

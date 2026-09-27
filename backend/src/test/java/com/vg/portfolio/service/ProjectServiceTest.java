@@ -56,36 +56,6 @@ class ProjectServiceTest {
     }
 
     // -------------------------------------------------------------------------
-    // getFeatured
-    // -------------------------------------------------------------------------
-
-    @Test
-    void getFeatured_returnsOnlyFeaturedProjects() {
-        when(projectRepository.findByFeaturedTrue()).thenReturn(List.of(project1));
-
-        List<Project> result = projectService.getFeatured();
-
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).isFeatured()).isTrue();
-        verify(projectRepository).findByFeaturedTrue();
-    }
-
-    // -------------------------------------------------------------------------
-    // getByCategory
-    // -------------------------------------------------------------------------
-
-    @Test
-    void getByCategory_returnsMatchingProjects() {
-        when(projectRepository.findByCategory("self-built")).thenReturn(List.of(project2));
-
-        List<Project> result = projectService.getByCategory("self-built");
-
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getCategory()).isEqualTo("self-built");
-        verify(projectRepository).findByCategory("self-built");
-    }
-
-    // -------------------------------------------------------------------------
     // getById
     // -------------------------------------------------------------------------
 
