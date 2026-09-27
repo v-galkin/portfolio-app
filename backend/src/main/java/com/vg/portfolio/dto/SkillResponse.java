@@ -4,7 +4,6 @@ import com.vg.portfolio.model.Skill;
 
 import java.util.List;
 
-/** What the API returns for a skill. */
 public record SkillResponse(
         Long id,
         String category,

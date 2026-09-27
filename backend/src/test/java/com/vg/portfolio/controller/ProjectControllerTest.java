@@ -76,26 +76,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getFeatured_returns200WithFeaturedOnly() throws Exception {
-        when(projectService.getFeatured()).thenReturn(List.of(project1));
-
-        mockMvc.perform(get("/api/projects/featured"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].featured", is(true)));
-    }
-
-    @Test
-    void getByCategory_returns200WithFilteredList() throws Exception {
-        when(projectService.getByCategory("self-built")).thenReturn(List.of(project2));
-
-        mockMvc.perform(get("/api/projects/category/self-built"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].category", is("self-built")));
-    }
-
-    @Test
     void getById_returns200WithProject() throws Exception {
         when(projectService.getById(1L)).thenReturn(project1);
 

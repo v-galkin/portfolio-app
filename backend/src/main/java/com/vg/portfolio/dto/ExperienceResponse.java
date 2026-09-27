@@ -4,7 +4,6 @@ import com.vg.portfolio.model.Experience;
 
 import java.util.List;
 
-/** What the API returns for an experience. */
 public record ExperienceResponse(
         Long id,
         String company,

@@ -1,5 +1,3 @@
-// Name, bio and profile links now come from the backend (/api/profile), edited in Admin → Profile.
-
 /** Home page sections linked from the navbar; `id` must match the section's id. */
 export const NAV_SECTIONS = [
     { id: "experience", label: "Experience" },

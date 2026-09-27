@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
-/** Request body for creating or updating a skill. Has no id: clients can't choose or change it. */
 public record SkillRequest(
         @NotBlank String category,
         List<String> items

@@ -34,8 +34,6 @@ export default function Admin() {
         e.preventDefault();
         setError("");
         try {
-            // The server checks the password once and sets an HttpOnly session cookie;
-            // only the username is kept in the app
             const user = await login(username, password);
             setPassword("");
             setAuth(user);
@@ -84,7 +82,6 @@ export default function Admin() {
 
     return (
         <div className="min-h-screen bg-slate-900 text-slate-100">
-            {/* Rendered here rather than in Layout, so the navbar only shows after login */}
             <Navbar />
 
             <div className="bg-slate-800 border-b border-slate-700">

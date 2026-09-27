@@ -72,7 +72,7 @@ class ErrorResponseIntegrationTest {
         assertThat(json(response).path("error").asText()).isNotBlank();
     }
 
-    // Regression test for BUGS.md #13: /error must be reachable without credentials,
+    // /error must be reachable without credentials,
     // otherwise errors that reach it are turned into 401 for anonymous callers.
     @Test
     void errorEndpoint_isNotBlockedBySecurity() {

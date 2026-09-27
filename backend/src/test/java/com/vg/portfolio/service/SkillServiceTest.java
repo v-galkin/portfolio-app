@@ -36,10 +36,6 @@ class SkillServiceTest {
         skill2 = new Skill(2L, "Frontend", List.of("React", "TypeScript", "Tailwind"));
     }
 
-    // -------------------------------------------------------------------------
-    // getAll
-    // -------------------------------------------------------------------------
-
     @Test
     void getAll_returnsAllSkills() {
         when(skillRepository.findAll()).thenReturn(List.of(skill1, skill2));
@@ -49,10 +45,6 @@ class SkillServiceTest {
         assertThat(result).hasSize(2).containsExactly(skill1, skill2);
         verify(skillRepository).findAll();
     }
-
-    // -------------------------------------------------------------------------
-    // getById
-    // -------------------------------------------------------------------------
 
     @Test
     void getById_returnsSkill_whenExists() {
@@ -75,10 +67,6 @@ class SkillServiceTest {
 
         verify(skillRepository).findById(99L);
     }
-
-    // -------------------------------------------------------------------------
-    // delete
-    // -------------------------------------------------------------------------
 
     @Test
     void delete_callsRepository_whenExists() {

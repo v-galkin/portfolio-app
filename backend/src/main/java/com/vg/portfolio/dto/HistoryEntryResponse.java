@@ -2,7 +2,6 @@ package com.vg.portfolio.dto;
 
 import com.vg.portfolio.model.HistoryEntry;
 
-/** What the API returns for a history entry. */
 public record HistoryEntryResponse(
         Long id,
         String date,

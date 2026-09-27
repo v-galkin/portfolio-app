@@ -4,15 +4,20 @@ name: CI/CD
 # Push to main (or a manual run): the same checks, then build and push the backend image
 # to GHCR and deploy both parts to the server.
 #
-# Secrets (same as weather-metrics): VPS_HOST, VPS_USER, VPS_SSH_KEY (github_actions_deploy key).
+# Secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY (github_actions_deploy key).
 # Server prerequisites: see DEPLOYMENT.md (repo cloned at ~/portfolio-app with .env,
 # /srv/www/portfolio served by the shared nginx).
 
 on:
   push:
     branches: [main]
+    # Documentation-only changes don't need tests or a deploy
+    paths-ignore:
+      - "**.md"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**.md"
   workflow_dispatch:
 
 env:

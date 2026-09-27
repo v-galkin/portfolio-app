@@ -39,10 +39,6 @@ class CertificationServiceTest {
                 "2022-11", "https://vmware.com/verify/cert2");
     }
 
-    // -------------------------------------------------------------------------
-    // getAll
-    // -------------------------------------------------------------------------
-
     @Test
     void getAll_returnsAllCertifications() {
         when(certificationRepository.findAll()).thenReturn(List.of(cert1, cert2));
@@ -52,10 +48,6 @@ class CertificationServiceTest {
         assertThat(result).hasSize(2).containsExactly(cert1, cert2);
         verify(certificationRepository).findAll();
     }
-
-    // -------------------------------------------------------------------------
-    // getById
-    // -------------------------------------------------------------------------
 
     @Test
     void getById_returnsCertification_whenExists() {
@@ -78,10 +70,6 @@ class CertificationServiceTest {
 
         verify(certificationRepository).findById(99L);
     }
-
-    // -------------------------------------------------------------------------
-    // delete
-    // -------------------------------------------------------------------------
 
     @Test
     void delete_callsRepository_whenExists() {

@@ -39,10 +39,6 @@ class EducationServiceTest {
                 "Machine Learning", "2021-01", "2021-06", "Online");
     }
 
-    // -------------------------------------------------------------------------
-    // getAll
-    // -------------------------------------------------------------------------
-
     @Test
     void getAll_returnsAllEducations() {
         when(educationRepository.findAll()).thenReturn(List.of(education1, education2));
@@ -52,10 +48,6 @@ class EducationServiceTest {
         assertThat(result).hasSize(2).containsExactly(education1, education2);
         verify(educationRepository).findAll();
     }
-
-    // -------------------------------------------------------------------------
-    // getById
-    // -------------------------------------------------------------------------
 
     @Test
     void getById_returnsEducation_whenExists() {
@@ -78,10 +70,6 @@ class EducationServiceTest {
         verify(educationRepository).findById(99L);
     }
 
-    // -------------------------------------------------------------------------
-    // create
-    // -------------------------------------------------------------------------
-
     @Test
     void create_savesAndReturnsEducation() {
         Education newEducation = new Education(null, "Victoria University", "Master of IT",
@@ -97,10 +85,6 @@ class EducationServiceTest {
         assertThat(result.getInstitution()).isEqualTo("Victoria University");
         verify(educationRepository).save(newEducation);
     }
-
-    // -------------------------------------------------------------------------
-    // delete
-    // -------------------------------------------------------------------------
 
     @Test
     void delete_callsRepository_whenExists() {

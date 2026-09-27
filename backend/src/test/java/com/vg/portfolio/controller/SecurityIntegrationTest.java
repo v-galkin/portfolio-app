@@ -30,7 +30,7 @@ class SecurityIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // MockBeans needed so the context loads (other controller tests may share context)
+    // Mocked so these security checks never reach the database
     @MockitoBean
     private ProjectService projectService;
 

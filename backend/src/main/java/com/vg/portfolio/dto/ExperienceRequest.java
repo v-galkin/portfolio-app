@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
-/** Request body for creating or updating an experience. Has no id: clients can't choose or change it. */
 public record ExperienceRequest(
         @NotBlank String company,
         @NotBlank String role,

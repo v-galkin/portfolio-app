@@ -3,7 +3,6 @@ package com.vg.portfolio.dto;
 import com.vg.portfolio.model.Education;
 import jakarta.validation.constraints.NotBlank;
 
-/** Request body for creating or updating an education. Has no id: clients can't choose or change it. */
 public record EducationRequest(
         @NotBlank String institution,
         @NotBlank String degree,

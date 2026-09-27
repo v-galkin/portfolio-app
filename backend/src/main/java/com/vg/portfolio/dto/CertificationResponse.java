@@ -2,7 +2,6 @@ package com.vg.portfolio.dto;
 
 import com.vg.portfolio.model.Certification;
 
-/** What the API returns for a certification. */
 public record CertificationResponse(
         Long id,
         String name,
