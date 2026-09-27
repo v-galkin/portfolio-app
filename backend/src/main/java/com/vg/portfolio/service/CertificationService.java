@@ -14,7 +14,7 @@ public class CertificationService {
     private final CertificationRepository certificationRepository;
 
     public List<Certification> getAll() {
-        return certificationRepository.findAll();
+        return certificationRepository.findAllByOrderByDateDesc();
     }
 
     public Certification getById(Long id) {

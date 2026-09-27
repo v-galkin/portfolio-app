@@ -14,7 +14,7 @@ public class EducationService {
     private final EducationRepository educationRepository;
 
     public List<Education> getAll() {
-        return educationRepository.findAll();
+        return educationRepository.findAllByOrderByStartDateDesc();
     }
 
     public Education getById(Long id) {

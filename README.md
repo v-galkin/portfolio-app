@@ -30,9 +30,23 @@ The website has the following sections:
 
 ## Screenshots
 
-![Portfolio website](screenshots/portfolio.png)
+### Main page
+![Main page with the About section](screenshots/portfolio.png)
 
-![Admin panel](screenshots/admin.png)
+### Projects
+![Projects section with the Featured and All filters](screenshots/projects.png)
+
+### Admin panel
+![Admin panel with the list of items](screenshots/admin.png)
+
+### Editing an item
+![Admin panel with the edit form open](screenshots/admin-edit.png)
+
+### CI/CD pipeline
+![GitHub Actions run with all four jobs passing](screenshots/pipeline.png)
+
+### Mobile view
+![Website on a phone with the menu open](screenshots/mobile.png)
 
 ## Tech Stack
 

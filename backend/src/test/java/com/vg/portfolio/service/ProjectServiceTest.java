@@ -43,12 +43,12 @@ class ProjectServiceTest {
 
     @Test
     void getAll_returnsAllProjects() {
-        when(projectRepository.findAll()).thenReturn(List.of(project1, project2));
+        when(projectRepository.findAllByOrderByIdAsc()).thenReturn(List.of(project1, project2));
 
         List<Project> result = projectService.getAll();
 
         assertThat(result).hasSize(2).containsExactly(project1, project2);
-        verify(projectRepository).findAll();
+        verify(projectRepository).findAllByOrderByIdAsc();
     }
 
     @Test
