@@ -2,7 +2,6 @@ package com.vg.portfolio.dto;
 
 import com.vg.portfolio.model.Education;
 
-/** What the API returns for an education. */
 public record EducationResponse(
         Long id,
         String institution,

@@ -42,8 +42,7 @@ class CorsIntegrationTest {
                 .andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
     }
 
-    // The old CorsConfig hard-coded the Vite dev origin; it must not be allowed
-    // unless it's listed in cors.allowed.origins.
+    // The Vite dev origin must not be allowed unless it's listed in cors.allowed.origins
     @Test
     void preflight_fromViteDevOrigin_isRejected_whenNotConfigured() throws Exception {
         mockMvc.perform(options("/api/skills")

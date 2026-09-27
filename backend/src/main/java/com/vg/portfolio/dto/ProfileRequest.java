@@ -4,7 +4,6 @@ import com.vg.portfolio.model.Profile;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-/** Request body for updating the profile. */
 public record ProfileRequest(
         @NotBlank String name,
         String headline,

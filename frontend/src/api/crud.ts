@@ -1,10 +1,7 @@
 import client from "./client";
 import type { CrudApi } from "../hooks/useCrud";
 
-/**
- * Typed list/create/update/delete calls for one REST resource, e.g. crudApi<Skill>("/skills").
- * Admin writes are authorized by the session cookie, which the browser sends automatically.
- */
+/** Typed list/create/update/delete calls for one REST resource, e.g. crudApi<Skill>("/skills"). */
 export function crudApi<T extends { id: number }>(path: string): CrudApi<T, Omit<T, "id">> {
     return {
         list: () => client.get<T[]>(path),

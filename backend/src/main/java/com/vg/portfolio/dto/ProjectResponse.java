@@ -4,7 +4,6 @@ import com.vg.portfolio.model.Project;
 
 import java.util.List;
 
-/** What the API returns for a project. */
 public record ProjectResponse(
         Long id,
         String name,
