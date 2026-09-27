@@ -5,7 +5,7 @@ name: CI/CD
 # to GHCR and deploy both parts to the server.
 #
 # Secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY (github_actions_deploy key).
-# Server prerequisites: see DEPLOYMENT.md (repo cloned at ~/portfolio-app with .env,
+# Server prerequisites: see "Deployment" in README.md (repo cloned at ~/portfolio-app with .env,
 # /srv/www/portfolio served by the shared nginx).
 
 on:

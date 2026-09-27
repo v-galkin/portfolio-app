@@ -70,9 +70,6 @@ export default function Navbar() {
                         Main Page
                     </Link>
                     <nav className={navbarStyles.nav}>
-                        <NavLink to="/history" className={({ isActive }) => (isActive ? navbarStyles.linkActive : navbarStyles.link)}>
-                            History
-                        </NavLink>
                         {/* "/#id" works from other pages too: the home page scrolls to the hash once loaded */}
                         {NAV_SECTIONS.map(({ id, label }) => (
                             <a key={id} href={`/#${id}`} className={sectionClass(id, navbarStyles.link)}>
@@ -83,6 +80,12 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-3">
+                    <NavLink
+                        to="/history"
+                        className={({ isActive }) => `hidden lg:block ${isActive ? navbarStyles.linkActive : navbarStyles.link}`}
+                    >
+                        History
+                    </NavLink>
                     {auth ? (
                         <div className="relative" ref={dropdownRef}>
                             <button
@@ -136,6 +139,11 @@ export default function Navbar() {
 
             {menuOpen && (
                 <nav className={navbarStyles.mobileMenu}>
+                    {NAV_SECTIONS.map(({ id, label }) => (
+                        <a key={id} href={`/#${id}`} onClick={() => setMenuOpen(false)} className={sectionClass(id, navbarStyles.mobileLink)}>
+                            {label}
+                        </a>
+                    ))}
                     <NavLink
                         to="/history"
                         onClick={() => setMenuOpen(false)}
@@ -143,11 +151,6 @@ export default function Navbar() {
                     >
                         History
                     </NavLink>
-                    {NAV_SECTIONS.map(({ id, label }) => (
-                        <a key={id} href={`/#${id}`} onClick={() => setMenuOpen(false)} className={sectionClass(id, navbarStyles.mobileLink)}>
-                            {label}
-                        </a>
-                    ))}
                 </nav>
             )}
         </header>
