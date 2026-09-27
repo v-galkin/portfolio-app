@@ -14,7 +14,7 @@ public class SkillService {
     private final SkillRepository skillRepository;
 
     public List<Skill> getAll() {
-        return skillRepository.findAll();
+        return skillRepository.findAllByOrderByIdAsc();
     }
 
     public Skill getById(Long id) {

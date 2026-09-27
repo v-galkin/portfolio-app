@@ -41,12 +41,12 @@ class EducationServiceTest {
 
     @Test
     void getAll_returnsAllEducations() {
-        when(educationRepository.findAll()).thenReturn(List.of(education1, education2));
+        when(educationRepository.findAllByOrderByStartDateDesc()).thenReturn(List.of(education1, education2));
 
         List<Education> result = educationService.getAll();
 
         assertThat(result).hasSize(2).containsExactly(education1, education2);
-        verify(educationRepository).findAll();
+        verify(educationRepository).findAllByOrderByStartDateDesc();
     }
 
     @Test

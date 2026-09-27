@@ -41,12 +41,12 @@ class CertificationServiceTest {
 
     @Test
     void getAll_returnsAllCertifications() {
-        when(certificationRepository.findAll()).thenReturn(List.of(cert1, cert2));
+        when(certificationRepository.findAllByOrderByDateDesc()).thenReturn(List.of(cert1, cert2));
 
         List<Certification> result = certificationService.getAll();
 
         assertThat(result).hasSize(2).containsExactly(cert1, cert2);
-        verify(certificationRepository).findAll();
+        verify(certificationRepository).findAllByOrderByDateDesc();
     }
 
     @Test

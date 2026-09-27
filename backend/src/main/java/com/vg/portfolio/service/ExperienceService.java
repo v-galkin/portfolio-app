@@ -14,7 +14,7 @@ public class ExperienceService {
     private final ExperienceRepository experienceRepository;
 
     public List<Experience> getAll() {
-        return experienceRepository.findAll();
+        return experienceRepository.findAllByOrderByStartDateDesc();
     }
 
     public Experience getById(Long id) {

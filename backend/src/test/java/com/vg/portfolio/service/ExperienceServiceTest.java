@@ -43,12 +43,12 @@ class ExperienceServiceTest {
 
     @Test
     void getAll_returnsAllExperiences() {
-        when(experienceRepository.findAll()).thenReturn(List.of(experience1, experience2));
+        when(experienceRepository.findAllByOrderByStartDateDesc()).thenReturn(List.of(experience1, experience2));
 
         List<Experience> result = experienceService.getAll();
 
         assertThat(result).hasSize(2).containsExactly(experience1, experience2);
-        verify(experienceRepository).findAll();
+        verify(experienceRepository).findAllByOrderByStartDateDesc();
     }
 
     @Test

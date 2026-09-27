@@ -14,7 +14,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
 
     public List<Project> getAll() {
-        return projectRepository.findAll();
+        return projectRepository.findAllByOrderByIdAsc();
     }
 
     public Project getById(Long id) {

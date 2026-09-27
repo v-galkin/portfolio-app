@@ -38,12 +38,12 @@ class SkillServiceTest {
 
     @Test
     void getAll_returnsAllSkills() {
-        when(skillRepository.findAll()).thenReturn(List.of(skill1, skill2));
+        when(skillRepository.findAllByOrderByIdAsc()).thenReturn(List.of(skill1, skill2));
 
         List<Skill> result = skillService.getAll();
 
         assertThat(result).hasSize(2).containsExactly(skill1, skill2);
-        verify(skillRepository).findAll();
+        verify(skillRepository).findAllByOrderByIdAsc();
     }
 
     @Test
