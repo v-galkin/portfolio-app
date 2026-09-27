@@ -40,10 +40,6 @@ class HistoryEntryServiceTest {
                 "Passed the AWS Developer Associate exam", "education");
     }
 
-    // -------------------------------------------------------------------------
-    // getAll
-    // -------------------------------------------------------------------------
-
     @Test
     void getAll_returnsEntriesOrderedByDateDesc() {
         // Repository returns already-sorted list (newest first)
@@ -56,10 +52,6 @@ class HistoryEntryServiceTest {
         assertThat(result.get(1).getDate()).isEqualTo("2022-03");
         verify(historyEntryRepository).findAllByOrderByDateDesc();
     }
-
-    // -------------------------------------------------------------------------
-    // getById
-    // -------------------------------------------------------------------------
 
     @Test
     void getById_returnsEntry_whenExists() {
@@ -83,10 +75,6 @@ class HistoryEntryServiceTest {
         verify(historyEntryRepository).findById(99L);
     }
 
-    // -------------------------------------------------------------------------
-    // update
-    // -------------------------------------------------------------------------
-
     @Test
     void update_updatesAllFields_andReturns() {
         HistoryEntry updated = new HistoryEntry(null, "2024-09", "Promoted to Lead",
@@ -107,10 +95,6 @@ class HistoryEntryServiceTest {
         verify(historyEntryRepository).findById(1L);
         verify(historyEntryRepository).save(any(HistoryEntry.class));
     }
-
-    // -------------------------------------------------------------------------
-    // delete
-    // -------------------------------------------------------------------------
 
     @Test
     void delete_callsRepository_whenExists() {

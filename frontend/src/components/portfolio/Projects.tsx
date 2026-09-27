@@ -13,10 +13,9 @@ interface Props {
 
 const categoryLabel = (value: string) => PROJECT_CATEGORIES.find((c) => c.value === value)?.label ?? value;
 
-// "Featured", then one filter per category (AI Assisted first, as before), then "All"
+// "Featured", then one filter per category (AI Assisted first), then "All"
 const filters = ["Featured", ...[...PROJECT_CATEGORIES].reverse().map((c) => c.label), "All"];
 
-// The filter toggles only appear here, so their classes live here
 const filterBase = "px-4 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200";
 const filterClasses = {
     active: `${filterBase} bg-slate-600 text-white`,

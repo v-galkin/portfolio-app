@@ -2,7 +2,6 @@ package com.vg.portfolio.dto;
 
 import com.vg.portfolio.model.Profile;
 
-/** What the API returns for the profile. */
 public record ProfileResponse(
         String name,
         String headline,

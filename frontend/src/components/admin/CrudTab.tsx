@@ -157,7 +157,6 @@ export default function CrudTab<T extends { id: number }>({
 
             {loadError && <div className="mb-6"><ErrorBox error={loadError} /></div>}
 
-            {/* Mobile: cards */}
             <div className="flex flex-col gap-3 sm:hidden">
                 {items.map((item) => (
                     <div key={item.id} className="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col gap-2">
@@ -167,7 +166,6 @@ export default function CrudTab<T extends { id: number }>({
                 ))}
             </div>
 
-            {/* Desktop: table */}
             <Table headers={[...columns.map((c) => c.header), "Actions"]} minWidth={tableMinWidth}>
                 {items.map((item) => (
                     <Tr key={item.id}>

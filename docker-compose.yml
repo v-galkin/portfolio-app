@@ -46,8 +46,6 @@ services:
     restart: unless-stopped
     networks:
       - portfolio-network
-  # No frontend container: CI builds the React app and rsyncs it to /srv/www/portfolio
-  # on the server, which the shared nginx serves (see DEPLOYMENT.md).
 volumes:
   postgres_data:
 networks:

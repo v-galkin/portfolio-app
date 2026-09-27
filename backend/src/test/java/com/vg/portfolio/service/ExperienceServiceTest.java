@@ -41,10 +41,6 @@ class ExperienceServiceTest {
                 List.of("Maintained legacy code"));
     }
 
-    // -------------------------------------------------------------------------
-    // getAll
-    // -------------------------------------------------------------------------
-
     @Test
     void getAll_returnsAllExperiences() {
         when(experienceRepository.findAll()).thenReturn(List.of(experience1, experience2));
@@ -54,10 +50,6 @@ class ExperienceServiceTest {
         assertThat(result).hasSize(2).containsExactly(experience1, experience2);
         verify(experienceRepository).findAll();
     }
-
-    // -------------------------------------------------------------------------
-    // getById
-    // -------------------------------------------------------------------------
 
     @Test
     void getById_returnsExperience_whenExists() {
@@ -80,10 +72,6 @@ class ExperienceServiceTest {
         verify(experienceRepository).findById(99L);
     }
 
-    // -------------------------------------------------------------------------
-    // create
-    // -------------------------------------------------------------------------
-
     @Test
     void create_savesAndReturnsExperience() {
         Experience newExperience = new Experience(null, "New Co", "Engineer",
@@ -99,10 +87,6 @@ class ExperienceServiceTest {
         assertThat(result.getCompany()).isEqualTo("New Co");
         verify(experienceRepository).save(newExperience);
     }
-
-    // -------------------------------------------------------------------------
-    // update
-    // -------------------------------------------------------------------------
 
     @Test
     void update_updatesFields_andReturns() {
@@ -128,10 +112,6 @@ class ExperienceServiceTest {
         verify(experienceRepository).findById(1L);
         verify(experienceRepository).save(any(Experience.class));
     }
-
-    // -------------------------------------------------------------------------
-    // delete
-    // -------------------------------------------------------------------------
 
     @Test
     void delete_callsRepository_whenExists() {

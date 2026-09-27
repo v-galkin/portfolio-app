@@ -4,7 +4,6 @@ import { useAuth } from "../../context/useAuth";
 import { NAV_SECTIONS } from "../../constants";
 import { findActiveSection } from "./activeSection";
 
-// Navbar-only classes (not shared, so they live here)
 const navbarStyles = {
     navbar: "sticky top-0 z-50 bg-slate-800 border-b border-slate-700",
     container: "max-w-6xl mx-auto px-6 py-3 flex items-center justify-between",

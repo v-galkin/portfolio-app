@@ -41,10 +41,6 @@ class ProjectServiceTest {
                 false, "self-built");
     }
 
-    // -------------------------------------------------------------------------
-    // getAll
-    // -------------------------------------------------------------------------
-
     @Test
     void getAll_returnsAllProjects() {
         when(projectRepository.findAll()).thenReturn(List.of(project1, project2));
@@ -54,10 +50,6 @@ class ProjectServiceTest {
         assertThat(result).hasSize(2).containsExactly(project1, project2);
         verify(projectRepository).findAll();
     }
-
-    // -------------------------------------------------------------------------
-    // getById
-    // -------------------------------------------------------------------------
 
     @Test
     void getById_returnsProject_whenExists() {
@@ -80,10 +72,6 @@ class ProjectServiceTest {
         verify(projectRepository).findById(99L);
     }
 
-    // -------------------------------------------------------------------------
-    // create
-    // -------------------------------------------------------------------------
-
     @Test
     void create_savesAndReturnsProject() {
         Project newProject = new Project(null, "New Project", "Description",
@@ -99,10 +87,6 @@ class ProjectServiceTest {
         assertThat(result.getName()).isEqualTo("New Project");
         verify(projectRepository).save(newProject);
     }
-
-    // -------------------------------------------------------------------------
-    // update
-    // -------------------------------------------------------------------------
 
     @Test
     void update_updatesAllFields_andReturns() {
@@ -129,10 +113,6 @@ class ProjectServiceTest {
         verify(projectRepository).findById(1L);
         verify(projectRepository).save(any(Project.class));
     }
-
-    // -------------------------------------------------------------------------
-    // delete
-    // -------------------------------------------------------------------------
 
     @Test
     void delete_callsRepository_whenExists() {
