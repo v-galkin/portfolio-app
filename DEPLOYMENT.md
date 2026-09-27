@@ -27,7 +27,7 @@ Pull requests only run step 1.
 ## One-time server setup
 
 1. **Repo:** cloned at `~/portfolio-app` over SSH (`git@github.com:v-galkin/portfolio-app.git`).
-2. **`.env`** next to `docker-compose.yml`, from `.env.example`: `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `POSTGRES_PASSWORD`, `CORS_ALLOWED_ORIGINS`.
+2. **`.env`** next to `docker-compose.yml`, with `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `POSTGRES_PASSWORD` and `CORS_ALLOWED_ORIGINS` (all required and non-empty; `POSTGRES_PASSWORD` must match the database user's password).
 3. **Docker network:** `portfolio-network` exists (shared with nginx).
 4. **Frontend folder:** `/srv/www/portfolio`, owned by the deploy user, bind-mounted read-only into nginx at `/usr/share/nginx/html/portfolio`.
 5. **nginx** (portfolio server block): `location /` serves that folder with `try_files $uri $uri/ /index.html`; `location /api` proxies to `portfolio-backend:8080` and sets `X-Forwarded-For` and `X-Forwarded-Proto`.
