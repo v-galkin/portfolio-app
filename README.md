@@ -5,10 +5,10 @@ A personal portfolio website with an admin panel. A Spring Boot REST API stores 
 The website has the following sections:
 - **Profile**: personal details, shown in two sections:
    - About: name, headline, biography and GitHub/LinkedIn buttons
-   - Contact: email, LinkedIn and GitHub buttons
+   - Contact: LinkedIn and GitHub buttons, and an email button when an email is set
 - **Experience**: work experience on a timeline, with a card for each position showing the role, company, dates, location and main responsibilities
 - **Education**: a card for each degree, with the institution, field of study, dates and location
-- **Projects**: a card for each project, with a description, the technologies used, and links to the live version and the source code
+- **Projects**: a card for each project, with a description, the technologies used, an optional label (for example "University Final Project"), and links to the live version and the source code when they are set
    - Filters: featured projects or all projects
 - **Skills**: technical skills grouped by category, one card per category
    - Example: "Cloud & DevOps" lists AWS, Docker, Git and Linux
@@ -31,7 +31,7 @@ The website has the following sections:
 ## Screenshots
 
 ### Main page
-![Main page with the About section](screenshots/portfolio.png)
+![Main page with the About section](screenshots/main_page.png)
 
 ### Projects
 ![Projects section with the Featured and All filters](screenshots/projects.png)
@@ -40,13 +40,10 @@ The website has the following sections:
 ![Admin panel with the list of items](screenshots/admin.png)
 
 ### Editing an item
-![Admin panel with the edit form open](screenshots/admin-edit.png)
+![Admin panel with the edit form open](screenshots/admin_edit.png)
 
 ### CI/CD pipeline
-![GitHub Actions run with all four jobs passing](screenshots/pipeline.png)
-
-### Mobile view
-![Website on a phone with the menu open](screenshots/mobile.png)
+![GitHub Actions run with all four jobs passing](screenshots/ci_cd_pipeline.png)
 
 ## Tech Stack
 
@@ -203,7 +200,7 @@ docker logout ghcr.io
 ```
 Run `git switch main` before the next deploy. Otherwise `git pull` in the pipeline fails, because the repository is not on a branch.
 
-Flyway migrations only add to the schema, so older backend versions keep working with a newer database. Before a release that changes the schema, take a backup:
+Flyway migrations are kept backward compatible: they only add to the schema or relax it (for example, making a column optional), so older backend versions keep working with a newer database. Before a release that changes the schema, take a backup:
 ```bash
 docker exec portfolio-db pg_dump -U portfolio_user portfolio > ~/portfolio-backup-$(date +%F).sql
 ```
