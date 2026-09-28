@@ -1,6 +1,6 @@
 import axios from "axios";
 
-/** The one axios instance for the backend. Resources are in resources.ts, auth in auth.ts. */
+/** The one axios instance for the backend. */
 const client = axios.create({
     baseURL: "/api",
     headers: {

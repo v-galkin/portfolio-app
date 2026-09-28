@@ -19,8 +19,9 @@ services:
       - portfolio-network
   portfolio-backend:
     container_name: portfolio-backend
-    # Built and pushed by CI (.github/workflows/ci-cd.yml); the server pulls it.
-    # `build` stays so `docker compose up --build` still works locally.
+    # Backend image:
+    # - image: built by CI, pulled by the server
+    # - build: for `docker compose up --build` locally
     image: ghcr.io/v-galkin/portfolio-app-backend:latest
     build: ./backend
     env_file:
@@ -40,7 +41,7 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-      # Startup takes ~2 minutes on the server; failed checks don't count until this has passed
+      # Startup takes ~2 minutes on the server
       start_period: 180s
     mem_limit: 512m
     restart: unless-stopped

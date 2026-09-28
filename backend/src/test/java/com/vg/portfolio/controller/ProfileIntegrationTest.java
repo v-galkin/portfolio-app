@@ -15,8 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Real (H2) database migrated by Flyway, so this also checks the V3 migration and its seed.
-// @Transactional rolls back each test's changes.
+// Profile API against a real database:
+// - H2 migrated by Flyway, so this also checks the V3 migration and its seed
+// - @Transactional rolls back each test
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

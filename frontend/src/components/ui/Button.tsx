@@ -26,7 +26,6 @@ export default function Button({ variant, size, className, type = "button", ...p
     return <button type={type} className={classes({ variant, size }, className)} {...props} />;
 }
 
-/** A link styled as a button. */
 export function ButtonLink({ variant, size, className, ...props }: StyleProps & AnchorHTMLAttributes<HTMLAnchorElement>) {
     return <a className={classes({ variant, size }, className)} {...props} />;
 }

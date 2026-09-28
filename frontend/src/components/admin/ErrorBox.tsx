@@ -1,6 +1,6 @@
 import { fieldLabel, type ApiError } from "../../api/errors";
 
-/** Shows an API error, including per-field validation messages. Renders nothing when there's no error. */
+/** Shows an API error with per-field messages; nothing when there's no error. */
 export default function ErrorBox({ error }: { error: ApiError | null }) {
     if (!error) return null;
 

@@ -3,7 +3,7 @@ import Card from "../ui/Card";
 import { ButtonLink } from "../ui/Button";
 import type { Profile } from "../../types";
 
-/** Contact links from the profile (edited in Admin → Profile); empty ones are hidden. */
+/** Contact links from the profile, edited in Admin → Profile; empty ones are hidden. */
 export default function Contact({ profile }: { profile: Profile | null }) {
     return (
         <Section id="contact" title="Contact">

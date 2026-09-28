@@ -67,7 +67,7 @@ export default function Projects({ projects }: Props) {
                                 ))}
                             </div>
 
-                            {/* Only show a button when its link is set (empty or null means no button) */}
+                            {/* Only show a button when its link is set */}
                             {(project.url?.trim() || project.githubUrl?.trim()) && (
                                 <div className="flex gap-2">
                                     {project.url?.trim() && (

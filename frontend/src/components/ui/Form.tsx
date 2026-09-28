@@ -2,7 +2,7 @@ import { cloneElement, useId, type InputHTMLAttributes, type ReactElement, type 
 
 const control = "bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-slate-400 transition-colors";
 
-/** A labelled form field. The label is linked to the control, so clicking it focuses the input. */
+/** A labelled form field; clicking the label focuses the input. */
 export function Field({ label, children }: { label: string; children: ReactElement<{ id?: string }> }) {
     const id = useId();
     return (

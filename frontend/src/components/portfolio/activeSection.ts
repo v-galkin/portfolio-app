@@ -1,8 +1,8 @@
 /**
- * Which home-page section the reader is in, for highlighting the navbar link.
- * It's the last section whose top has scrolled above 40% of the viewport; at the very
- * bottom of the page it's the last section (short sections like Contact may never reach
- * that line). Returns "" above the first section.
+ * Which home-page section the reader is in, for the navbar highlight:
+ * - the last section whose top is above 40% of the viewport
+ * - at the bottom of the page, the last section
+ * - "" above the first section
  */
 export function findActiveSection(
     sections: { id: string; top: number }[],

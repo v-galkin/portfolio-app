@@ -39,7 +39,7 @@ export default function Admin() {
             setAuth(user);
         } catch (err) {
             const apiError = toApiError(err);
-            // 401 = wrong credentials; 429 = blocked after too many attempts (server's message)
+            // 401 = wrong credentials; 429 = blocked after too many attempts
             setError(apiError.status === 401 ? "Invalid username or password." : apiError.message);
         }
     };

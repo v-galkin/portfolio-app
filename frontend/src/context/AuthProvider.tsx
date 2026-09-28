@@ -3,8 +3,9 @@ import { getCurrentUser, logout, type Auth } from "../api/auth";
 import { AuthContext } from "./authContext";
 
 /**
- * Holds who is logged in. Only the username is kept; the login itself lives in an HttpOnly
- * session cookie. On page load it asks the server, so a refresh keeps you logged in.
+ * Holds who is logged in:
+ * - only the username is kept; the login is an HttpOnly session cookie
+ * - asks the server on page load, so a refresh keeps you logged in
  */
 export default function AuthProvider({ children }: { children: ReactNode }) {
     const [auth, setAuthState] = useState<Auth | null>(null);
@@ -19,7 +20,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     const setAuth = (newAuth: Auth | null) => {
         if (!newAuth) {
-            // End the server session too; ignore errors (e.g. already expired)
+            // End the server session too; ignore errors
             logout().catch(() => {});
         }
         setAuthState(newAuth);

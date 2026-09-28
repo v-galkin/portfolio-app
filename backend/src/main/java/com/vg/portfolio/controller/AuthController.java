@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 /**
- * Session login for the admin panel, so the browser never has to store the password.
- * Logout (POST /api/auth/logout) is handled by Spring Security, see SecurityConfig.
+ * Admin session login:
+ * - the browser never stores the password
+ * - logout (POST /api/auth/logout) is handled in SecurityConfig
  */
 @RestController
 @RequestMapping("/api/auth")
@@ -26,8 +27,9 @@ public class AuthController {
     private final SecurityContextRepository sessionRepository = new HttpSessionSecurityContextRepository();
 
     /**
-     * Called with Basic credentials (checked by Spring Security and the brute-force filter before
-     * this runs). Stores the login in the session, which sets the JSESSIONID cookie.
+     * POST /api/auth/login: logs the admin in.
+     * - credentials are already checked by Spring Security and the brute-force filter
+     * - stores the login in the session, which sets the JSESSIONID cookie
      */
     @PostMapping("/login")
     public Map<String, String> login(Authentication authentication,
@@ -43,8 +45,10 @@ public class AuthController {
     }
 
     /**
-     * Who is logged in, used to restore the login after a page refresh. The frontend calls this
-     * on every page load, so "not logged in" is a normal 204 rather than a 401 error.
+     * GET /api/auth/me: who is logged in.
+     * - the frontend calls it on every page load to check for an existing session
+     * - logged in: 200 with the username
+     * - not logged in: 204 with no body, a normal answer rather than a 401 error
      */
     @GetMapping("/me")
     public ResponseEntity<Map<String, String>> me(Authentication authentication) {

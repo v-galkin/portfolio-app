@@ -16,8 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Runs a real server: MockMvc skips the servlet container's error handling
-// (the forward to /error), so it can't catch problems there.
+// Real server: MockMvc skips the forward to /error
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class ErrorResponseIntegrationTest {
@@ -72,8 +71,7 @@ class ErrorResponseIntegrationTest {
         assertThat(json(response).path("error").asText()).isNotBlank();
     }
 
-    // /error must be reachable without credentials,
-    // otherwise errors that reach it are turned into 401 for anonymous callers.
+    // /error must be public, otherwise anonymous callers get 401
     @Test
     void errorEndpoint_isNotBlockedBySecurity() {
         ResponseEntity<String> response = restTemplate.getForEntity("/error", String.class);

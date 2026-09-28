@@ -5,8 +5,9 @@ export interface Auth {
 }
 
 /**
- * Logs in once. The backend checks the password and sets an HttpOnly session cookie,
- * which the browser then sends automatically; the password is never stored.
+ * Logs in once:
+ * - the backend sets an HttpOnly session cookie
+ * - the password is never stored
  */
 export const login = (username: string, password: string) =>
     client
@@ -15,7 +16,7 @@ export const login = (username: string, password: string) =>
         })
         .then((res) => res.data);
 
-/** Who is logged in (restores the login after a page refresh); null when not logged in (204). */
+/** Who is logged in, to restore the login after a page refresh; null when not logged in. */
 export const getCurrentUser = () =>
     client.get<Auth>("/auth/me").then((res) => (res.status === 200 ? res.data : null));
 
