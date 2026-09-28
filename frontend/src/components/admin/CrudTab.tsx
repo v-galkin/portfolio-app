@@ -6,55 +6,56 @@ import { Field, Input, Textarea, Select } from "../ui/Form";
 import Table, { Tr, Td } from "../ui/Table";
 import ErrorBox from "./ErrorBox";
 
-type Key<T> = Extract<keyof Omit<T, "id">, string>;
+type FieldName<Item> = Extract<keyof Omit<Item, "id">, string>;
 
 /** One form control in the add/edit modal. */
-export type FieldConfig<T> =
-    | { type: "text"; name: Key<T>; label: string; required?: boolean; placeholder?: string }
-    | { type: "textarea"; name: Key<T>; label: string; rows: number }
-    | { type: "select"; name: Key<T>; label: string; options: { value: string; label: string }[] }
-    | { type: "checkbox"; name: Key<T>; label: string }
+export type FieldConfig<Item> =
+    | { type: "text"; name: FieldName<Item>; label: string; required?: boolean; placeholder?: string }
+    | { type: "textarea"; name: FieldName<Item>; label: string; rows: number }
+    | { type: "select"; name: FieldName<Item>; label: string; options: { value: string; label: string }[] }
+    | { type: "checkbox"; name: FieldName<Item>; label: string }
     /** A string[] edited as text: comma separated in an input, or one per line in a textarea. */
-    | { type: "list"; name: Key<T>; label: string; separator: "," | "\n"; rows?: number; placeholder?: string }
-    /** Two fields side by side. */
-    | { type: "row"; fields: FieldConfig<T>[] };
+    | { type: "list"; name: FieldName<Item>; label: string; separator: "," | "\n"; rows?: number; placeholder?: string }
+    | { type: "row"; fields: FieldConfig<Item>[] };
 
-export interface Column<T> {
+export interface Column<Item> {
     header: string;
-    render: (item: T) => ReactNode;
-    /** The row's main value (white text). */
+    render: (item: Item) => ReactNode;
+    /** The row's main value, shown in white. */
     primary?: boolean;
 }
 
-interface Props<T extends { id: number }> {
-    /** Heading, for example "Certifications". */
+interface Props<Item extends { id: number }> {
     title: string;
     /** Used in "+ Add …", "Edit …" and "Delete …", e.g. "Certification". */
     itemName: string;
-    api: CrudApi<T, Omit<T, "id">>;
-    /** Values for a new item. */
-    empty: Omit<T, "id">;
-    columns: Column<T>[];
+    api: CrudApi<Item, Omit<Item, "id">>;
+    empty: Omit<Item, "id">;
+    columns: Column<Item>[];
     /** Minimum table width before it scrolls, e.g. "min-w-[500px]". */
     tableMinWidth: string;
     /** Content of the card shown instead of the table on small screens. */
-    mobileCard: (item: T) => ReactNode;
-    fields: FieldConfig<T>[];
+    mobileCard: (item: Item) => ReactNode;
+    fields: FieldConfig<Item>[];
     onUnauthorized: () => void;
 }
 
 type Values = Record<string, unknown>;
 
-const flatten = <T,>(fields: FieldConfig<T>[]): Exclude<FieldConfig<T>, { type: "row" }>[] =>
+const flatten = <Item,>(fields: FieldConfig<Item>[]): Exclude<FieldConfig<Item>, { type: "row" }>[] =>
     fields.flatMap((f) => (f.type === "row" ? flatten(f.fields) : [f]));
 
-/** A complete admin tab: list (mobile cards + desktop table), add/edit modal and delete confirmation. */
-export default function CrudTab<T extends { id: number }>({
+/**
+ * A complete admin tab:
+ * - mobile cards, desktop table, add/edit modal and delete confirmation
+ * - each resource tab, e.g. SkillsTab, only passes its fields and columns
+ */
+export default function CrudTab<Item extends { id: number }>({
     title, itemName, api, empty, columns, tableMinWidth, mobileCard, fields, onUnauthorized,
-}: Props<T>) {
+}: Props<Item>) {
     const { items, loadError, saveError, deleteError, busy, save, remove, clearErrors } = useCrud(api, onUnauthorized);
     const [showModal, setShowModal] = useState(false);
-    const [editItem, setEditItem] = useState<T | null>(null);
+    const [editItem, setEditItem] = useState<Item | null>(null);
     const [values, setValues] = useState<Values>({ ...empty });
     const [deleteId, setDeleteId] = useState<number | null>(null);
 
@@ -67,7 +68,7 @@ export default function CrudTab<T extends { id: number }>({
         setShowModal(true);
     };
 
-    const openEdit = (item: T) => {
+    const openEdit = (item: Item) => {
         clearErrors();
         setEditItem(item);
         const next: Values = {};
@@ -89,7 +90,7 @@ export default function CrudTab<T extends { id: number }>({
         for (const f of listFields) {
             data[f.name] = String(values[f.name] ?? "").split(f.separator).map((v) => v.trim()).filter(Boolean);
         }
-        if (await save(editItem?.id ?? null, data as Omit<T, "id">)) setShowModal(false);
+        if (await save(editItem?.id ?? null, data as Omit<Item, "id">)) setShowModal(false);
     };
 
     const handleDelete = async () => {
@@ -99,7 +100,7 @@ export default function CrudTab<T extends { id: number }>({
 
     const set = (name: string, value: unknown) => setValues((v) => ({ ...v, [name]: value }));
 
-    const renderField = (f: FieldConfig<T>, index: number): ReactNode => {
+    const renderField = (f: FieldConfig<Item>, index: number): ReactNode => {
         switch (f.type) {
             case "row":
                 return <div key={index} className="grid grid-cols-2 gap-3">{f.fields.map(renderField)}</div>;
@@ -141,7 +142,7 @@ export default function CrudTab<T extends { id: number }>({
         }
     };
 
-    const rowButtons = (item: T) => (
+    const rowButtons = (item: Item) => (
         <>
             <Button size="sm" onClick={() => openEdit(item)}>Edit</Button>
             <Button size="sm" variant="danger" onClick={() => { clearErrors(); setDeleteId(item.id); }}>Delete</Button>

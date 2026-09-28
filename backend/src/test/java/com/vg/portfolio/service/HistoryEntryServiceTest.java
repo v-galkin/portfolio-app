@@ -32,7 +32,6 @@ class HistoryEntryServiceTest {
 
     @BeforeEach
     void setUp() {
-        // entry1 is more recent — should come first when ordered by date desc
         entry1 = new HistoryEntry(1L, "2024-06", "Joined Acme Corp",
                 "Started as Senior Developer", "work");
 
@@ -42,7 +41,6 @@ class HistoryEntryServiceTest {
 
     @Test
     void getAll_returnsEntriesOrderedByDateDesc() {
-        // Repository returns already-sorted list (newest first)
         when(historyEntryRepository.findAllByOrderByDateDesc()).thenReturn(List.of(entry1, entry2));
 
         List<HistoryEntry> result = historyEntryService.getAll();

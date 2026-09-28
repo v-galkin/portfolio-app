@@ -26,8 +26,7 @@ export default function Navbar() {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const onHome = pathname === "/";
 
-    // Highlight the section being read. A scroll listener (rather than observing elements on
-    // mount) also works for sections that appear later, after the home page has loaded its data.
+    // Highlight the section being read; also works for sections that load later
     useEffect(() => {
         if (!onHome) return;
         const update = () => {
@@ -35,7 +34,7 @@ export default function Navbar() {
                 .map(({ id }) => document.getElementById(id))
                 .filter((el): el is HTMLElement => el !== null)
                 .map((el) => ({ id: el.id, top: el.getBoundingClientRect().top }));
-            // Only a page that can scroll has a "bottom" (a short page, e.g. while loading, doesn't)
+            // Only a scrollable page has a "bottom"
             const pageHeight = document.documentElement.scrollHeight;
             const atBottom = pageHeight > window.innerHeight && window.innerHeight + window.scrollY >= pageHeight - 2;
             setActiveSection(findActiveSection(sections, window.innerHeight, atBottom));
@@ -70,7 +69,7 @@ export default function Navbar() {
                         Main Page
                     </Link>
                     <nav className={navbarStyles.nav}>
-                        {/* "/#id" works from other pages too: the home page scrolls to the hash once loaded */}
+                        {/* "/#id" also works from other pages */}
                         {NAV_SECTIONS.map(({ id, label }) => (
                             <a key={id} href={`/#${id}`} className={sectionClass(id, navbarStyles.link)}>
                                 {label}

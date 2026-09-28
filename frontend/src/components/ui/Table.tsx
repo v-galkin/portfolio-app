@@ -7,7 +7,7 @@ interface TableProps {
     children: ReactNode;
 }
 
-/** The admin list table, shown from the `sm` breakpoint up (mobile uses cards). */
+/** The admin list table, shown from the `sm` breakpoint up; mobile uses cards. */
 export default function Table({ headers, minWidth, children }: TableProps) {
     return (
         <div className="hidden sm:block border border-slate-700 rounded-xl overflow-hidden">

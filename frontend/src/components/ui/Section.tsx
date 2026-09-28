@@ -10,7 +10,6 @@ interface Props {
     children: ReactNode;
 }
 
-/** A full-width page section with a centred container and an optional title. */
 export default function Section({ id, title, alt, children }: Props) {
     return (
         <section id={id} className={alt ? "py-20 px-6 bg-slate-800" : "py-20 px-6"}>

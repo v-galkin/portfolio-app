@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/** The single site profile: public GET, admin-only PUT (see SecurityConfig). */
 @RestController
 @RequestMapping("/api/profile")
 @RequiredArgsConstructor

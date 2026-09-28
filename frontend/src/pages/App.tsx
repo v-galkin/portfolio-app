@@ -54,8 +54,7 @@ function App() {
         fetchAll();
     }, [reloadKey]);
 
-    // Links like "/#projects" (from the navbar on another page) arrive before the sections
-    // exist, so the browser can't scroll to them itself; do it once the data has loaded.
+    // Scroll to "/#section" links once the data has loaded
     useEffect(() => {
         if (!loading && window.location.hash) {
             document.getElementById(window.location.hash.slice(1))?.scrollIntoView();

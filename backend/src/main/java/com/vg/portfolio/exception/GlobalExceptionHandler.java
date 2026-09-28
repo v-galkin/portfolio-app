@@ -18,8 +18,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Gives every error response the same shape as the 401 from SecurityConfig:
- * {"error": "..."} plus "fields" for validation errors.
+ * Same error shape everywhere:
+ * - {"error": "..."}
+ * - plus "fields" for validation errors
  */
 @Slf4j
 @RestControllerAdvice
@@ -58,8 +59,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).headers(headers).body(body);
     }
 
-    // Spring MVC's own exceptions (405, 415, malformed JSON, unknown URL, ...) keep their
-    // status code but use our body shape instead of ProblemDetail.
+    // Spring MVC errors (405, 415, bad JSON, unknown URL) keep their status, with our body shape
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
                                                              Object body,

@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
-    /** The single profile row (seeded by Flyway V3). */
+    /** The single profile row, seeded by Flyway V3. */
     Optional<Profile> findFirstByOrderByIdAsc();
 }

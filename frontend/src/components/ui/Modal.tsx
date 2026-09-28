@@ -12,7 +12,6 @@ interface ModalProps {
     children: ReactNode;
 }
 
-/** A dialog containing a form. */
 export default function Modal({ title, onClose, onSubmit, children }: ModalProps) {
     return (
         <div className={overlay}>

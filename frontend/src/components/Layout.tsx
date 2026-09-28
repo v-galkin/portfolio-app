@@ -5,7 +5,7 @@ import Admin from '../pages/Admin.tsx'
 import Changelog from '../pages/Changelog.tsx'
 import NotFound from '../pages/NotFound.tsx'
 
-// Admin renders its own navbar (only after login), so the global one is hidden there
+// Admin renders its own navbar after login, so the global one is hidden there
 const HIDDEN_NAVBAR_ROUTES = ['/admin'];
 
 export default function Layout() {

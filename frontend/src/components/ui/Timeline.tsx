@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
 
-/** A vertical line with items along it (used by Experience and the Changelog). */
+/** A vertical line with items along it, used by Experience and the Changelog. */
 export default function Timeline({ children }: { children: ReactNode }) {
     return <div className="flex flex-col gap-6 pl-6 border-l-2 border-slate-700">{children}</div>;
 }
 
-/** One entry on the timeline, with a dot on the line. */
 export function TimelineItem({ children }: { children: ReactNode }) {
     return (
         <div className="relative">

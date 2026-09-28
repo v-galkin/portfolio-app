@@ -11,9 +11,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Counts failed logins per client IP. After {@code maxAttempts} failures within
- * {@code window}, the IP is blocked for the same duration. A successful login resets it.
- * State is in memory, so it resets when the app restarts (fine for a single instance).
+ * Counts failed logins per client IP:
+ * - {@code maxAttempts} failures within {@code window} block the IP for the same duration
+ * - a successful login resets the count
+ * - kept in memory, so it resets on restart
  */
 @Component
 public class LoginAttemptService {

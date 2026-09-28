@@ -10,11 +10,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Blocks brute-force attempts on the admin login. Only requests that send credentials
- * are counted; anonymous visitors are never affected.
- *
- * Runs before BasicAuthenticationFilter (registered in SecurityConfig, deliberately not a
- * @Component so it isn't also registered as a plain servlet filter).
+ * Blocks brute-force attempts on the admin login:
+ * - only requests with credentials are counted
+ * - runs before BasicAuthenticationFilter
+ * - registered in SecurityConfig, not a @Component, so it isn't registered twice
  */
 public class LoginAttemptFilter extends OncePerRequestFilter {
 

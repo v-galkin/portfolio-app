@@ -10,7 +10,6 @@ import ErrorBox from "./ErrorBox";
 const empty = { name: "", headline: "", bio: "", githubUrl: "", linkedinUrl: "", email: "" };
 type Form = typeof empty;
 
-/** The single site profile shown in About, Contact and the footer. */
 export default function ProfileTab({ onUnauthorized }: { onUnauthorized: () => void }) {
     const [form, setForm] = useState<Form>(empty);
     const [loaded, setLoaded] = useState(false);

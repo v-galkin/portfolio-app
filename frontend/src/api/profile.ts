@@ -1,8 +1,9 @@
 import client from "./client";
 import type { Profile } from "../types";
 
-// The profile rarely changes and is needed by several components (About, Contact, footer),
-// so one request is shared per page load. Saving in the admin panel replaces it.
+// Profile cache:
+// - one request shared per page load by About, Contact and the footer
+// - saving in the admin panel replaces it
 let cached: Promise<Profile> | null = null;
 
 export function loadProfile(): Promise<Profile> {

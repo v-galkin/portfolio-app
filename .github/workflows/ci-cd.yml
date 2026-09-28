@@ -1,12 +1,10 @@
 name: CI/CD
 
-# Pull requests: test the backend and check the frontend (lint + build).
-# Push to main (or a manual run): the same checks, then build and push the backend image
-# to GHCR and deploy both parts to the server.
-#
-# Secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY (github_actions_deploy key).
-# Server prerequisites: see "Deployment" in README.md (repo cloned at ~/portfolio-app with .env,
-# /srv/www/portfolio served by the shared nginx).
+# Pipeline:
+# - pull requests: backend tests, frontend lint and build
+# - push to main or manual run: the same, then build the image and deploy
+# - secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY
+# - server setup: "Deployment" in README.md
 
 on:
   push:
@@ -109,15 +107,14 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
-      # Backend first: if it fails, the old frontend keeps running against the old backend.
+      # Backend first: if it fails, the old frontend keeps working
       - name: Deploy backend
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # The image is private: log the server in with this run's short-lived token,
-          # pull, then log out again, so no long-lived credentials stay on the server.
+          # Private image: log in with this run's short-lived token, pull, log out
           printf '%s' "$GHCR_TOKEN" | ssh -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" \
             "docker login ghcr.io -u '${{ github.actor }}' --password-stdin"
           ssh -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" '
@@ -153,7 +150,7 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
           test -f dist/index.html
-          # --delete removes files from the previous build (Vite hashes file names)
+          # --delete removes files from the previous build
           rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" dist/ "$VPS_USER@$VPS_HOST:/srv/www/portfolio/"
 
       - name: Smoke test

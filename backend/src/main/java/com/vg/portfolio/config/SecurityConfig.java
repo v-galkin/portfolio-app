@@ -48,18 +48,17 @@ public class SecurityConfig {
                 .addFilterBefore(new LoginAttemptFilter(loginAttemptService), BasicAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                // The admin panel logs in once (POST /api/auth/login) and then uses a session cookie
-                // (HttpOnly, SameSite=Strict; see application.properties). Only that endpoint creates
-                // a session: Basic auth on other requests stays stateless, e.g. for curl and tests.
-                // CSRF stays disabled: SameSite=Strict keeps the cookie off cross-site requests.
+                // Admin session:
+                // - login via POST /api/auth/login sets an HttpOnly, SameSite=Strict cookie
+                // - only that endpoint creates a session; Basic auth elsewhere stays stateless
+                // - CSRF off: SameSite=Strict keeps the cookie off cross-site requests
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
-                // Read the login from an existing session, but never create one here, otherwise
-                // every Basic-auth request would start a session. AuthController creates it on login.
+                // Read the login from an existing session; only AuthController creates one
                 .securityContext(context -> context.securityContextRepository(new DelegatingSecurityContextRepository(
                         new RequestAttributeSecurityContextRepository(), existingSessionsOnly())))
-                // Don't store rejected requests in a session to replay after login (browser-form feature)
+                // Don't store rejected requests in a session to replay after login
                 .requestCache(cache -> cache.requestCache(new NullRequestCache()))
                 .logout(logout -> logout
                         .logoutRequestMatcher(PathPatternRequestMatcher.withDefaults()
@@ -69,8 +68,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Spring Boot forwards errors (404, 400, 500) to /error to build the response;
-                        // without this, anonymous callers get 401 instead of the real status
+                        // Errors are forwarded to /error; without this, anonymous callers get 401 instead
                         .requestMatchers("/error").permitAll()
                         // Docker's health check calls this without credentials
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
@@ -110,7 +108,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        // docker-compose passes unset variables as empty strings, so check for blank, not just missing
+        // docker-compose passes unset variables as empty strings
         if (adminUsername == null || adminUsername.isBlank()
                 || adminPassword == null || adminPassword.isBlank()) {
             throw new IllegalStateException(

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** The site owner's profile shown in About, Contact and the footer. There is a single row. */
+/** The site owner's profile: a single row, shown in About, Contact and the footer. */
 @Getter
 @Setter
 @NoArgsConstructor

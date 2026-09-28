@@ -3,7 +3,7 @@ import axios from "axios";
 export interface ApiError {
     status?: number;
     message: string;
-    /** Field name → message, from the backend's validation errors (400). */
+    /** Field name → message, from the backend's 400 validation errors. */
     fields?: Record<string, string>;
 }
 

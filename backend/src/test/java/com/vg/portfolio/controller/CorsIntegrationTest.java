@@ -12,8 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// CORS is configured only in SecurityConfig, from cors.allowed.origins
-// (http://localhost:3000 in application-test.properties).
+// Allowed origin in tests: http://localhost:3000, from application-test.properties
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

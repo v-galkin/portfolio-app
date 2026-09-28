@@ -2,7 +2,6 @@ import Section from "../ui/Section";
 import { ButtonLink } from "../ui/Button";
 import type { Profile } from "../../types";
 
-/** Name, headline, bio and profile links; edited in Admin → Profile. */
 export default function About({ profile }: { profile: Profile | null }) {
     return (
         <Section id="about">

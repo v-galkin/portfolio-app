@@ -2,20 +2,21 @@ import { useEffect, useState } from "react";
 import type { AxiosResponse } from "axios";
 import { toApiError, type ApiError } from "../api/errors";
 
-/** The API calls one admin tab needs. Define it at module level so it keeps the same identity. */
-export interface CrudApi<T, D> {
-    list: () => Promise<AxiosResponse<T[]>>;
-    create: (data: D) => Promise<unknown>;
-    update: (id: number, data: D) => Promise<unknown>;
+/** The API calls one admin tab needs; define it at module level. */
+export interface CrudApi<Item, ItemData> {
+    list: () => Promise<AxiosResponse<Item[]>>;
+    create: (data: ItemData) => Promise<unknown>;
+    update: (id: number, data: ItemData) => Promise<unknown>;
     remove: (id: number) => Promise<unknown>;
 }
 
 /**
- * Trims text fields and the strings inside list fields (dropping empty ones) before saving,
- * so "  Backend " is saved as "Backend" and "   " counts as empty (the backend rejects it
- * with a "must not be blank" message instead of storing spaces).
+ * Before saving:
+ * - trims text fields and list items
+ * - drops empty list items
+ * - "   " counts as empty, so the backend rejects it as blank
  */
-export function trimStrings<D>(data: D): D {
+export function trimStrings<Data>(data: Data): Data {
     if (data === null || typeof data !== "object" || Array.isArray(data)) return data;
     return Object.fromEntries(
         Object.entries(data).map(([key, value]) => {
@@ -27,15 +28,16 @@ export function trimStrings<D>(data: D): D {
             }
             return [key, value];
         }),
-    ) as D;
+    ) as Data;
 }
 
 /**
- * Loads, saves and deletes items for an admin tab, and keeps track of errors so they
- * can be shown instead of failing silently. A 401 calls onUnauthorized (log out).
+ * Loads, saves and deletes items for an admin tab:
+ * - keeps errors so they can be shown
+ * - a 401 calls onUnauthorized to log out
  */
-export function useCrud<T, D>(api: CrudApi<T, D>, onUnauthorized: () => void) {
-    const [items, setItems] = useState<T[]>([]);
+export function useCrud<Item, ItemData>(api: CrudApi<Item, ItemData>, onUnauthorized: () => void) {
+    const [items, setItems] = useState<Item[]>([]);
     const [loadError, setLoadError] = useState<ApiError | null>(null);
     const [saveError, setSaveError] = useState<ApiError | null>(null);
     const [deleteError, setDeleteError] = useState<ApiError | null>(null);
@@ -66,7 +68,7 @@ export function useCrud<T, D>(api: CrudApi<T, D>, onUnauthorized: () => void) {
     };
 
     /** Creates (id === null) or updates an item. Returns true on success. */
-    const save = async (id: number | null, data: D): Promise<boolean> => {
+    const save = async (id: number | null, data: ItemData): Promise<boolean> => {
         setBusy(true);
         setSaveError(null);
         const trimmed = trimStrings(data);
